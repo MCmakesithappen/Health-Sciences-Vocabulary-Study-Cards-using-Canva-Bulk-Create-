@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NC Health Science Study Card Tools</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal:#0F6E56; --teal-l:#5DCAA5; --teal-bg:#E1F5EE; --teal-pale:#F0FAF6;
+  --blue:#185FA5; --blue-bg:#E6F1FB; --blue-br:#85B7EB;
+  --amber:#854F0B; --amber-l:#EF9F27; --amber-bg:#FAEEDA;
+  --green:#3B6D11; --green-bg:#EAF3DE; --green-l:#97C459;
+  --purple:#534AB7; --purple-bg:#EEEDFE; --purple-l:#AFA9EC;
+  --ink:#1C1C1A; --ink-m:#44443F; --ink-mu:#6B6B64; --ink-h:#9B9B92;
+  --surf:#FFF; --bg:#F7F6F2; --bdr:rgba(0,0,0,.09); --bdr-m:rgba(0,0,0,.15);
+  --r:8px; --rm:12px; --rl:16px; --rxl:24px;
+  --sh:0 2px 8px rgba(0,0,0,.07),0 8px 24px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
+
+/* ── HEADER ── */
+.hdr{background:var(--teal);padding:52px 48px 48px;position:relative;overflow:hidden;text-align:center;}
+.hdr::before{content:'';position:absolute;top:-120px;right:-100px;width:420px;height:420px;border-radius:50%;background:rgba(255,255,255,.04);}
+.hdr::after{content:'';position:absolute;bottom:-140px;left:-60px;width:340px;height:340px;border-radius:50%;background:rgba(255,255,255,.03);}
+.hdr-in{max-width:680px;margin:0 auto;position:relative;}
+.hdr-eye{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:14px;}
+.hdr h1{font-family:'Lora',serif;font-size:36px;color:#fff;line-height:1.15;margin-bottom:14px;}
+.hdr h1 em{font-style:italic;color:var(--teal-l);}
+.hdr-desc{font-size:15px;color:rgba(255,255,255,.78);line-height:1.7;margin-bottom:22px;max-width:520px;margin-left:auto;margin-right:auto;}
+.hdr-badges{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+.badge{font-size:11px;font-weight:500;padding:4px 14px;border-radius:99px;background:rgba(255,255,255,.13);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.2);}
+
+/* ── MAIN ── */
+.main{max-width:960px;margin:0 auto;padding:48px 40px 80px;}
+
+/* ── SECTION LABELS ── */
+.sec-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-h);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--bdr-m);}
+
+/* ── TOOL CARDS ── */
+.tool-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:48px;}
+
+.tool-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rxl);padding:0;overflow:hidden;box-shadow:var(--sh);transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column;text-decoration:none;}
+.tool-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.12),0 24px 48px rgba(0,0,0,.08);}
+
+.card-accent{height:6px;}
+.card-accent.teal{background:linear-gradient(90deg,var(--teal),var(--teal-l));}
+.card-accent.blue{background:linear-gradient(90deg,var(--blue),var(--blue-br));}
+.card-accent.amber{background:linear-gradient(90deg,var(--amber),var(--amber-l));}
+
+.card-body{padding:24px 24px 20px;flex:1;display:flex;flex-direction:column;}
+.card-icon{width:48px;height:48px;border-radius:var(--rm);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px;flex-shrink:0;}
+.card-icon.teal{background:var(--teal-bg);}
+.card-icon.blue{background:var(--blue-bg);}
+.card-icon.amber{background:var(--amber-bg);}
+
+.card-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
+.card-label.teal{color:var(--teal);}
+.card-label.blue{color:var(--blue);}
+.card-label.amber{color:var(--amber);}
+
+.card-title{font-family:'Lora',serif;font-size:19px;font-weight:600;color:var(--ink);line-height:1.25;margin-bottom:10px;}
+.card-desc{font-size:13px;color:var(--ink-mu);line-height:1.65;flex:1;}
+
+.card-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px;}
+.tag{font-size:11px;font-weight:500;padding:3px 10px;border-radius:99px;}
+.tag.teal{background:var(--teal-bg);color:var(--teal);}
+.tag.blue{background:var(--blue-bg);color:var(--blue);}
+.tag.amber{background:var(--amber-bg);color:var(--amber);}
+.tag.gray{background:var(--bg);color:var(--ink-h);border:1px solid var(--bdr-m);}
+
+.card-footer{padding:16px 24px;border-top:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;}
+.open-btn{font-size:13px;font-weight:600;padding:9px 20px;border-radius:var(--rm);border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;text-decoration:none;display:inline-flex;align-items:center;gap:8px;}
+.open-btn.teal{background:var(--teal);color:#fff;}
+.open-btn.teal:hover{background:#0A5240;}
+.open-btn.blue{background:var(--blue);color:#fff;}
+.open-btn.blue:hover{background:var(--blue-dark, #0C447C);}
+.open-btn.amber{background:var(--amber);color:#fff;}
+.open-btn.amber:hover{background:#6B3D08;}
+.card-status{font-size:11px;font-weight:600;padding:4px 10px;border-radius:99px;}
+.status-ready{background:var(--green-bg);color:var(--green);}
+
+/* ── WORKFLOW SECTION ── */
+.workflow{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rxl);padding:32px;margin-bottom:48px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.workflow-title{font-family:'Lora',serif;font-size:20px;font-weight:600;color:var(--ink);margin-bottom:6px;}
+.workflow-sub{font-size:13px;color:var(--ink-mu);margin-bottom:24px;}
+.wf-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative;}
+.wf-steps::before{content:'';position:absolute;top:28px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,var(--teal-bg),var(--teal-l),var(--teal-bg));z-index:0;}
+.wf-step{display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;z-index:1;padding:0 8px;}
+.wf-circle{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:10px;border:3px solid var(--surf);}
+.wf-circle.c1{background:var(--teal-bg);}
+.wf-circle.c2{background:var(--blue-bg);}
+.wf-circle.c3{background:var(--blue-bg);}
+.wf-circle.c4{background:var(--teal-bg);}
+.wf-circle.c5{background:var(--green-bg);}
+.wf-title{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+.wf-sub-text{font-size:11px;color:var(--ink-h);line-height:1.4;}
+
+/* ── FEATURES STRIP ── */
+.features{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:48px;}
+.feat{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rl);padding:18px;text-align:center;}
+.feat-icon{font-size:24px;margin-bottom:8px;}
+.feat-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:4px;}
+.feat-desc{font-size:12px;color:var(--ink-h);line-height:1.5;}
+
+/* ── COURSES STRIP ── */
+.courses{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:48px;}
+.course-card{border-radius:var(--rl);padding:18px 20px;border:1px solid;}
+.course-card.hs{background:var(--teal-bg);border-color:var(--teal-l);}
+.course-card.ap{background:var(--blue-bg);border-color:var(--blue-br);}
+.course-card.nur{background:var(--amber-bg);border-color:var(--amber-l);}
+.course-card-title{font-size:14px;font-weight:600;margin-bottom:4px;}
+.course-card.hs .course-card-title{color:var(--teal);}
+.course-card.ap .course-card-title{color:var(--blue);}
+.course-card.nur .course-card-title{color:var(--amber);}
+.course-card-note{font-size:11px;color:var(--ink-h);margin-bottom:10px;}
+.course-subjects{display:flex;flex-wrap:wrap;gap:5px;}
+.subj{font-size:11px;font-weight:500;padding:2px 9px;border-radius:99px;background:rgba(255,255,255,.7);color:var(--ink-mu);}
+
+/* ── FOOTER ── */
+.footer{background:var(--teal);padding:28px 40px;text-align:center;}
+.footer-text{font-size:13px;color:rgba(255,255,255,.7);line-height:1.6;}
+.footer-text strong{color:#fff;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .main{padding:32px 20px 60px;}
+  .hdr{padding:40px 24px 36px;}
+  .hdr h1{font-size:28px;}
+  .tool-grid{grid-template-columns:1fr;}
+  .wf-steps{grid-template-columns:1fr;gap:12px;}
+  .wf-steps::before{display:none;}
+  .features{grid-template-columns:1fr 1fr;}
+  .courses{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-in">
+    <div class="hdr-eye">NC CTE Health Science · Ashe County Schools</div>
+    <h1>Health Science<br><em>Study Card Tools</em></h1>
+    <p class="hdr-desc">NC standards-aligned vocabulary tools for Health Science I, Anatomy &amp; Physiology, and CTE Nurse Aide — bilingual support included. Build interactive digital activities and print-ready card sets in minutes.</p>
+    <div class="hdr-badges">
+      <span class="badge">NC CTE Aligned</span>
+      <span class="badge">Pre-loaded Vocabulary</span>
+      <span class="badge">English + Spanish</span>
+      <span class="badge">AI-Powered</span>
+      <span class="badge">Free for Educators</span>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- TOOLS -->
+  <div class="sec-label">The tools</div>
+  <div class="tool-grid">
+
+    <!-- TOOL 1: Canva Code -->
+    <a class="tool-card" href="canva-code-prompt-writer-v3.html">
+      <div class="card-accent teal"></div>
+      <div class="card-body">
+        <div class="card-icon teal">🃏</div>
+        <div class="card-label teal">Digital · Interactive</div>
+        <div class="card-title">Canva Code Prompt Writer</div>
+        <div class="card-desc">Generate a complete interactive flashcard deck or memory match game for student devices. Paste the ready-made prompt directly into Canva Code — no coding needed. Works on Chromebooks, tablets, and phones.</div>
+        <div class="card-tags">
+          <span class="tag teal">Flashcard deck</span>
+          <span class="tag teal">Memory match game</span>
+          <span class="tag gray">Flip animations</span>
+          <span class="tag gray">Self-assessment</span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="card-status status-ready">✓ Ready</span>
+        <span class="open-btn teal">Open tool →</span>
+      </div>
+    </a>
+
+    <!-- TOOL 2: Bulk Create -->
+    <a class="tool-card" href="bulk-create-generator.html">
+      <div class="card-accent blue"></div>
+      <div class="card-body">
+        <div class="card-icon blue">🖨</div>
+        <div class="card-label blue">Printable · Physical Cards</div>
+        <div class="card-title">Bulk Create CSV Generator</div>
+        <div class="card-desc">Build a full set of printable study cards or Q&amp;A matching pairs. Generates a CSV with terms, Spanish translations, definitions, and AI image prompts — ready to drop into Canva Bulk Create. One download, hundreds of cards.</div>
+        <div class="card-tags">
+          <span class="tag blue">Study cards</span>
+          <span class="tag blue">Q&amp;A pairs</span>
+          <span class="tag gray">AI image prompts</span>
+          <span class="tag gray">CSV download</span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="card-status status-ready">✓ Ready</span>
+        <span class="open-btn blue">Open tool →</span>
+      </div>
+    </a>
+
+    <!-- TOOL 3: Teacher Guide -->
+    <a class="tool-card" href="bulk-create-teacher-guide.html">
+      <div class="card-accent amber"></div>
+      <div class="card-body">
+        <div class="card-icon amber">📖</div>
+        <div class="card-label amber">Teacher Reference</div>
+        <div class="card-title">Canva Bulk Create Teacher Guide</div>
+        <div class="card-desc">Step-by-step instructions for teachers new to Canva Bulk Create. Covers template setup, placeholder syntax, CSV upload, adding AI illustrations, printing double-sided cards, and the Q&amp;A pairs workflow — with a printable FAQ.</div>
+        <div class="card-tags">
+          <span class="tag amber">Step-by-step</span>
+          <span class="tag amber">Q&amp;A pairs guide</span>
+          <span class="tag gray">Troubleshooting</span>
+          <span class="tag gray">Printable</span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="card-status status-ready">✓ Ready</span>
+        <span class="open-btn amber">Open guide →</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- WORKFLOW -->
+  <div class="sec-label">How it works</div>
+  <div class="workflow">
+    <div class="workflow-title">From vocabulary list to student-ready cards</div>
+    <div class="workflow-sub">The complete workflow — digital interactive deck or printed physical cards, your choice</div>
+    <div class="wf-steps">
+      <div class="wf-step">
+        <div class="wf-circle c1">📋</div>
+        <div class="wf-title">Pick your terms</div>
+        <div class="wf-sub-text">Select from NC standards-based vocab lists or add your own</div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-circle c2">✨</div>
+        <div class="wf-title">AI fills the data</div>
+        <div class="wf-sub-text">Spanish translations, definitions, and image descriptions generated automatically</div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-circle c3">📥</div>
+        <div class="wf-title">Get your output</div>
+        <div class="wf-sub-text">Copy Canva Code prompts or download a Bulk Create CSV</div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-circle c4">🎨</div>
+        <div class="wf-title">Generate in Canva</div>
+        <div class="wf-sub-text">Paste into Canva Code for digital, or upload CSV for print</div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-circle c5">🎓</div>
+        <div class="wf-title">Students study</div>
+        <div class="wf-sub-text">Interactive flip cards on devices or physical cards in hand</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="sec-label">What's included</div>
+  <div class="features">
+    <div class="feat">
+      <div class="feat-icon">🇪🇸</div>
+      <div class="feat-title">Bilingual support</div>
+      <div class="feat-desc">English only, Spanish only, or bilingual — AI generates accurate medical Spanish translations</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">🧠</div>
+      <div class="feat-title">AI auto-fill</div>
+      <div class="feat-desc">Definitions, translations, anatomical image descriptions, and exam questions generated in one click</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">🎯</div>
+      <div class="feat-title">NC standards-aligned</div>
+      <div class="feat-desc">Pre-loaded vocabulary for every HU40, A&P, and NNAAP subject area — no term lookup required</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">🖨</div>
+      <div class="feat-title">Print or digital</div>
+      <div class="feat-desc">Interactive Canva Code widgets for Chromebooks, or Bulk Create CSV for physical printed cards</div>
+    </div>
+  </div>
+
+  <!-- COURSES -->
+  <div class="sec-label">Courses and subject areas covered</div>
+  <div class="courses">
+    <div class="course-card hs">
+      <div class="course-card-title">Health Science I — HU40</div>
+      <div class="course-card-note">Essential standards 1.00–4.03</div>
+      <div class="course-subjects">
+        <span class="subj">Skeletal</span>
+        <span class="subj">Muscular</span>
+        <span class="subj">Integumentary</span>
+        <span class="subj">Digestive</span>
+        <span class="subj">Urinary</span>
+        <span class="subj">Nervous</span>
+        <span class="subj">Sensory</span>
+        <span class="subj">Lymphatic</span>
+        <span class="subj">Endocrine</span>
+        <span class="subj">Reproductive</span>
+        <span class="subj">Body Organization</span>
+        <span class="subj">First Responder</span>
+      </div>
+    </div>
+    <div class="course-card ap">
+      <div class="course-card-title">Anatomy &amp; Physiology</div>
+      <div class="course-card-note">Full structural and physiological depth</div>
+      <div class="course-subjects">
+        <span class="subj">Cells &amp; Histology</span>
+        <span class="subj">Skeletal</span>
+        <span class="subj">Muscular</span>
+        <span class="subj">Nervous</span>
+        <span class="subj">Blood</span>
+        <span class="subj">Cardiovascular</span>
+        <span class="subj">Respiratory</span>
+        <span class="subj">Digestive</span>
+        <span class="subj">Urinary</span>
+        <span class="subj">Reproductive</span>
+        <span class="subj">Fluid Balance</span>
+        <span class="subj">Metabolism</span>
+      </div>
+    </div>
+    <div class="course-card nur">
+      <div class="course-card-title">CTE Nursing / Nurse Aide I</div>
+      <div class="course-card-note">NNAAP Modules A–H aligned</div>
+      <div class="course-subjects">
+        <span class="subj">Infection Control</span>
+        <span class="subj">Vital Signs</span>
+        <span class="subj">Medical Terminology</span>
+        <span class="subj">Patient Rights</span>
+        <span class="subj">Personal Care</span>
+        <span class="subj">Cardiovascular</span>
+        <span class="subj">Respiratory</span>
+        <span class="subj">Musculoskeletal</span>
+        <span class="subj">Nervous</span>
+        <span class="subj">Integumentary</span>
+        <span class="subj">Nutrition</span>
+        <span class="subj">Endocrine</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<div class="footer">
+  <div class="footer-text">
+    Built for <strong>NC CTE Health Science teachers</strong> at Ashe County High School &amp; beyond.<br>
+    Aligned to NC DPI CTE standards · Canva for Education required for Bulk Create and Canva Code features.<br>
+    <span style="opacity:.6;font-size:12px;margin-top:6px;display:block;">All vocabulary aligned to HU40, NC A&amp;P, and NNAAP curricula · Bilingual content generated by AI — always review for accuracy</span>
+  </div>
+</div>
+
+</body>
+</html>
