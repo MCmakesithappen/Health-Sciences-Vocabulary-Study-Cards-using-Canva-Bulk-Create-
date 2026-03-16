@@ -281,10 +281,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-
   <div class="gopt" id="mode-qa" onclick="setMode('qa')"><span class="gi">&#128256;</span><span class="gt">Q&amp;A pairs</span><span class="gd">Two cards per term</span></div>
   <div class="gopt" id="mode-both" onclick="setMode('both')"><span class="gi">&#128218;</span><span class="gt">Both sets</span><span class="gd">Study cards + Q&amp;A pairs</span></div>
 </div>
+<span class="sec-lbl">Difficulty level</span>
+<div class="ogrid c3">
+  <div class="gopt active" id="diff-basic" onclick="setDiff('basic')"><span class="gi">&#128217;</span><span class="gt">Basic</span><span class="gd">Introductory</span></div>
+  <div class="gopt" id="diff-intermediate" onclick="setDiff('intermediate')"><span class="gi">&#128218;</span><span class="gt">Intermediate</span><span class="gd">Grade-level</span></div>
+  <div class="gopt" id="diff-advanced" onclick="setDiff('advanced')"><span class="gi">&#128216;</span><span class="gt">Advanced</span><span class="gd">Clinical / AP</span></div>
+</div>
+<span class="sec-lbl">Illustration labels</span>
+<div class="tog-row c2">
+  <button class="tog active" id="label-labeled" onclick="setLabel('labeled')"><span class="t">Labeled</span><span class="d">Callout labels on image</span></button>
+  <button class="tog" id="label-unlabeled" onclick="setLabel('unlabeled')"><span class="t">Unlabeled</span><span class="d">Clean image, no text</span></button>
+</div>
 <div id="qaNote" style="display:none;">
   <div class="info-box"><strong>Q&amp;A pairs:</strong> Each term produces a Question card row and an Answer card row. You will fill in the <code>question</code> column in Excel or Google Sheets before uploading to Canva. Use two Canva templates - one for question cards, one for answer cards - and filter by the <code>card_type</code> column. See the Teacher Guide tab for full instructions.</div>
 </div>
-<div class="info-box" style="margin-top:8px;"><strong>How CSV completion works:</strong> This tool fills in the term names, subject, course, and card type automatically. You will open the downloaded CSV in Excel or Google Sheets to fill in the <code>definition</code> and <code>term_es</code> (Spanish) columns before uploading to Canva. The Teacher Guide tab shows you exactly how to do this step.</div>
+<div class="info-box" style="margin-top:8px;"><strong>AI-powered:</strong> Definitions, Spanish translations, anatomical image prompts, and exam questions are generated automatically. Review and edit any cell in the preview table before downloading.</div>
 </div>
 
 <button class="gen-btn" onclick="generateCSV()">&#11015; Build CSV for Canva Bulk Create</button>
@@ -453,6 +464,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-
 <div class="footer"><div class="footer-text">Built for <strong>NC CTE Health Science teachers</strong> at Ashe County High School and beyond - Aligned to NC DPI CTE standards - No API key required</div></div>
 
 <script>
+var API_KEY = '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';
+
 var VOCAB = {
   hs: {
     "Skeletal System": ["Axial skeleton","Appendicular skeleton","Compact bone","Spongy bone","Periosteum","Medullary cavity","Hematopoiesis","Epiphysis","Diaphysis","Articular cartilage","Ligament","Tendon","Ossification","Red marrow","Osteoporosis","Fracture","Scoliosis","Osteoarthritis","Osteoblast","Osteoclast"],
@@ -501,10 +514,36 @@ var VOCAB = {
   }
 };
 
+
+async function callClaude(prompt, maxTok) {
+  var r = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": API_KEY,
+      "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-direct-browser-access": "true"
+    },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: maxTok || 5000,
+      messages: [{ role: "user", content: prompt }]
+    })
+  });
+  if (!r.ok) {
+    var e = await r.json().catch(function(){ return {}; });
+    throw new Error(e.error ? e.error.message : "API error " + r.status);
+  }
+  var d = await r.json();
+  return d.content.filter(function(b){ return b.type === "text"; }).map(function(b){ return b.text; }).join("").trim();
+}
+
 var course = "hs";
 var subject = "Skeletal System";
 var lang = "bilingual";
 var cardMode = "study";
+var difficulty = "basic";
+var labelStyle = "labeled";
 var cardData = [];
 
 function showPage(id) {
@@ -610,32 +649,78 @@ function setMode(v) {
   document.getElementById("qaNote").style.display = (v==="qa"||v==="both") ? "block" : "none";
 }
 
+function setDiff(v) {
+  difficulty = v;
+  ["basic","intermediate","advanced"].forEach(function(x){
+    document.getElementById("diff-"+x).classList.toggle("active", x===v);
+  });
+}
+
+function setLabel(v) {
+  labelStyle = v;
+  ["labeled","unlabeled"].forEach(function(x){
+    document.getElementById("label-"+x).classList.toggle("active", x===v);
+  });
+}
+
 function getCL() {
   return course==="nur" ? "CTE Nurse Aide" : course==="ap" ? "Anatomy and Physiology" : "Health Science I";
 }
 
-function generateCSV() {
+async function generateCSV() {
   var terms = getTerms();
   if (!terms.length) { alert("Please select at least one vocabulary term."); return; }
   var cl = getCL();
   var hasEs = lang !== "english";
   var hasQA = cardMode === "qa" || cardMode === "both";
 
-  cardData = [];
-  terms.forEach(function(t) {
-    if (cardMode === "study" || cardMode === "both") {
-      cardData.push({card_type:"study_card", term_en:t, term_es:"", definition:"", question:"", subject:subject, course:cl});
-    }
-    if (hasQA) {
-      cardData.push({card_type:"question_card", term_en:t, term_es:"", definition:"", question:"", subject:subject, course:cl});
-      cardData.push({card_type:"answer_card", term_en:t, term_es:"", definition:"", question:"", subject:subject, course:cl});
-    }
-  });
+  var btn = document.querySelector(".gen-btn");
+  btn.disabled = true;
+  btn.innerHTML = "&#9203; Generating card data...";
 
-  renderTable(hasEs, hasQA);
-  renderOutputPanel(terms.length, cl, hasEs, hasQA);
-  document.getElementById("prevSec").classList.add("vis");
-  document.getElementById("prevSec").scrollIntoView({behavior:"smooth", block:"start"});
+  var diffNote = difficulty === "advanced" ? "clinical AP-level (2 sentences)"
+    : difficulty === "intermediate" ? "clear grade-level (1-2 sentences)"
+    : "simple introductory (1 clear sentence)";
+  var labelNote = labelStyle === "labeled"
+    ? "Include clear anatomical callout labels."
+    : "No labels - clean illustration only.";
+  var qNote = hasQA ? "\n" + (hasEs ? "6" : "5") + ". question: A concise exam-style question (max 100 chars) whose answer IS this term." : "";
+
+  var prompt = "You are an expert NC health science educator. For each term below from the " + subject + " unit (" + cl + " course), generate:\n"
+    + (hasEs ? "1. Spanish medical translation\n2." : "1.") + " Definition: " + diffNote + ", for high school students.\n"
+    + (hasEs ? "3" : "2") + ". image_prompt: Precise anatomical illustration for Canva AI (max 120 chars). Best anatomical view. " + labelNote + " Content only, no style words.\n"
+    + (hasEs ? "4" : "3") + ". best_view: Short phrase (e.g. Anterior, Cross-section)" + qNote
+    + "\n\nTerms:\n" + terms.map(function(t,i){ return (i+1)+". "+t; }).join("\n")
+    + "\n\nReturn ONLY a valid JSON array. No markdown.\n"
+    + '[{"term":"Femur"' + (hasEs ? ',"spanish":"Femur"' : '') + ',"definition":"The longest bone.","image_prompt":"Femur bone anterior view","best_view":"Anterior"' + (hasQA ? ',"question":"What is the longest bone in the human body?"' : '') + "}]";
+
+  try {
+    var raw = await callClaude(prompt, 5000);
+    var parsed;
+    try { parsed = JSON.parse(raw.replace(/```json|```/g, "").trim()); }
+    catch(e) { var m = raw.match(/\[[\s\S]+\]/); if (m) parsed = JSON.parse(m[0]); else throw new Error("parse failed"); }
+
+    cardData = [];
+    parsed.forEach(function(c) {
+      if (cardMode === "study" || cardMode === "both") {
+        cardData.push({card_type:"study_card", term_en:c.term, term_es:c.spanish||"", definition:c.definition||"", question:c.question||"", image_prompt:c.image_prompt||"", best_view:c.best_view||"", subject:subject, course:cl});
+      }
+      if (hasQA) {
+        cardData.push({card_type:"question_card", term_en:c.term, term_es:c.spanish||"", definition:c.definition||"", question:c.question||"", image_prompt:"", best_view:"", subject:subject, course:cl});
+        cardData.push({card_type:"answer_card", term_en:c.term, term_es:c.spanish||"", definition:c.definition||"", question:c.question||"", image_prompt:c.image_prompt||"", best_view:c.best_view||"", subject:subject, course:cl});
+      }
+    });
+
+    renderTable(hasEs, hasQA);
+    renderOutputPanel(terms.length, cl, hasEs, hasQA);
+    document.getElementById("prevSec").classList.add("vis");
+    document.getElementById("prevSec").scrollIntoView({behavior:"smooth", block:"start"});
+  } catch(e) {
+    alert("Error generating data: " + e.message);
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = "&#11015; Build CSV for Canva Bulk Create";
 }
 
 function renderTable(hasEs, hasQA) {
@@ -647,6 +732,7 @@ function renderTable(hasEs, hasQA) {
   if (hasEs) { var th=document.createElement("th"); th.textContent="term_es (fill in)"; hrow.appendChild(th); }
   var thd=document.createElement("th"); thd.textContent="definition (fill in)"; hrow.appendChild(thd);
   if (hasQA) { var thq=document.createElement("th"); thq.textContent="question (fill in)"; hrow.appendChild(thq); }
+  var thi=document.createElement("th"); thi.textContent="image_prompt"; hrow.appendChild(thi);
   var ths=document.createElement("th"); ths.textContent="subject"; hrow.appendChild(ths);
   hrow.appendChild(document.createElement("th"));
   head.innerHTML=""; head.appendChild(hrow);
@@ -682,6 +768,12 @@ function renderTable(hasEs, hasQA) {
       (function(idx){ taQ.addEventListener("input",function(){ cardData[idx].question=this.value; }); })(i);
       tdQ.appendChild(taQ); tr.appendChild(tdQ);
     }
+
+    var tdI=document.createElement("td");
+    var taI=document.createElement("textarea"); taI.placeholder="image prompt..."; taI.value=c.image_prompt||"";
+    taI.style.cssText="font-size:11px;min-width:160px;";
+    (function(idx){ taI.addEventListener("input",function(){ cardData[idx].image_prompt=this.value; }); })(i);
+    tdI.appendChild(taI); tr.appendChild(tdI);
 
     var tdS=document.createElement("td"); tdS.style.cssText="font-size:11px;color:var(--ink-h);"; tdS.textContent=c.subject; tr.appendChild(tdS);
 
@@ -765,14 +857,14 @@ function downloadCSV() {
   if (hasEs) headers.push("term_es");
   headers.push("definition");
   if (hasQA) headers.push("question");
-  headers.push("subject","course");
+  headers.push("image_prompt","best_view","subject","course");
   var rows = [headers.join(",")];
   cardData.forEach(function(c){
     var row = [c.card_type, c.term_en];
     if (hasEs) row.push(c.term_es||"");
     row.push(c.definition||"");
     if (hasQA) row.push(c.question||"");
-    row.push(c.subject, c.course);
+    row.push(c.image_prompt||"", c.best_view||"", c.subject, c.course);
     rows.push(row.map(q).join(","));
   });
   var blob = new Blob([rows.join("\n")], {type:"text/csv;charset=utf-8;"});
