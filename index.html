@@ -3,497 +3,754 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NC Health Science Study Card Tools</title>
+<title>NC Health Science - Canva Bulk Create CSV Builder</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--teal:#0F6E56;--teal-l:#5DCAA5;--teal-bg:#E1F5EE;--teal-pale:#F0FAF6;--blue:#185FA5;--blue-bg:#E6F1FB;--blue-br:#85B7EB;--blue-dk:#0C447C;--amber:#854F0B;--amber-l:#EF9F27;--amber-bg:#FAEEDA;--green:#3B6D11;--green-bg:#EAF3DE;--green-l:#97C459;--purple:#534AB7;--purple-bg:#EEEDFE;--red:#A32D2D;--red-bg:#FCEBEB;--red-l:#F09595;--ink:#1C1C1A;--ink-m:#44443F;--ink-mu:#6B6B64;--ink-h:#9B9B92;--surf:#FFF;--bg:#F7F6F2;--bg2:#F0EFE9;--bdr:rgba(0,0,0,.09);--bdr-m:rgba(0,0,0,.15);--r:8px;--rm:12px;--rl:16px;--rxl:22px;--sh:0 1px 4px rgba(0,0,0,.07),0 6px 16px rgba(0,0,0,.05);}
+:root{--teal:#0F6E56;--teal-l:#5DCAA5;--teal-bg:#E1F5EE;--teal-pale:#F0FAF6;--blue:#185FA5;--blue-bg:#E6F1FB;--blue-br:#85B7EB;--amber:#854F0B;--amber-l:#EF9F27;--amber-bg:#FAEEDA;--green:#3B6D11;--green-bg:#EAF3DE;--green-l:#97C459;--purple:#534AB7;--purple-bg:#EEEDFE;--ink:#1C1C1A;--ink-m:#44443F;--ink-mu:#6B6B64;--ink-h:#9B9B92;--surf:#FFF;--bg:#F7F6F2;--bdr:rgba(0,0,0,.09);--bdr-m:rgba(0,0,0,.15);--r:8px;--rm:12px;--rl:16px;--sh:0 1px 4px rgba(0,0,0,.07),0 6px 16px rgba(0,0,0,.05);}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
 .nav{background:var(--teal);position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2);}
 .nav-in{max-width:960px;margin:0 auto;display:flex;align-items:stretch;}
 .nav-brand{padding:0 18px;display:flex;align-items:center;gap:8px;color:#fff;font-weight:600;font-size:14px;white-space:nowrap;border-right:1px solid rgba(255,255,255,.15);}
-.nav-tabs{display:flex;flex:1;overflow-x:auto;scrollbar-width:none;}
-.nav-tabs::-webkit-scrollbar{display:none;}
-.nav-tab{padding:13px 16px;font-size:13px;font-weight:500;color:rgba(255,255,255,.7);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none;font-family:'DM Sans',sans-serif;}
+.nav-tabs{display:flex;flex:1;}
+.nav-tab{padding:13px 20px;font-size:13px;font-weight:500;color:rgba(255,255,255,.7);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;background:none;border-top:none;border-left:none;border-right:none;font-family:'DM Sans',sans-serif;}
 .nav-tab:hover{color:#fff;background:rgba(255,255,255,.08);}
 .nav-tab.active{color:#fff;border-bottom-color:var(--teal-l);font-weight:600;}
 .page{display:none;}.page.active{display:block;}
-.tool-main{max-width:940px;margin:0 auto;padding:28px 40px 80px;}
+.tool-hdr{background:linear-gradient(135deg,#0F6E56,#185FA5);padding:28px 44px 24px;}
+.tool-hdr-in{max-width:960px;margin:0 auto;}
+.hdr-eye{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:6px;}
+.tool-hdr h1{font-family:'Lora',serif;font-size:26px;color:#fff;line-height:1.2;margin-bottom:6px;}
+.tool-hdr p{font-size:13px;color:rgba(255,255,255,.75);max-width:580px;line-height:1.6;margin-bottom:12px;}
+.hdr-chips{display:flex;gap:7px;flex-wrap:wrap;}
+.chip{font-size:11px;font-weight:500;padding:3px 12px;border-radius:99px;background:rgba(255,255,255,.13);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.2);}
+.main{max-width:960px;margin:0 auto;padding:24px 44px 80px;}
 .panel{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rl);padding:20px 24px;margin-bottom:14px;box-shadow:var(--sh);}
 .step-hdr{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
 .step-n{width:26px;height:26px;border-radius:50%;background:var(--teal);color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.step-lbl{font-size:15px;font-weight:600;color:var(--ink);}
+.step-lbl{font-size:15px;font-weight:600;}
 .step-sub{font-size:12px;color:var(--ink-h);margin-left:auto;}
-.sec-lbl{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-h);margin-bottom:9px;display:block;}
+.sec-lbl{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-h);margin-bottom:8px;display:block;margin-top:4px;}
 .ctabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
-.ctab{font-size:13px;font-weight:500;padding:7px 16px;border-radius:99px;border:1px solid var(--bdr-m);background:transparent;cursor:pointer;color:var(--ink-mu);transition:all .15s;font-family:'DM Sans',sans-serif;}
+.ctab{font-size:13px;font-weight:500;padding:6px 16px;border-radius:99px;border:1px solid var(--bdr-m);background:transparent;cursor:pointer;color:var(--ink-mu);font-family:'DM Sans',sans-serif;}
 .ctab.a-hs{background:var(--teal-bg);color:var(--teal);border-color:var(--teal-l);font-weight:600;}
 .ctab.a-ap{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-br);font-weight:600;}
 .ctab.a-nur{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-l);font-weight:600;}
 .spanel{display:none;}.spanel.vis{display:block;}
-.cnote{font-size:12px;color:var(--ink-h);margin-bottom:10px;}
+.cnote{font-size:12px;color:var(--ink-h);margin-bottom:9px;}
 .pills{display:flex;flex-wrap:wrap;gap:6px;}
-.pill{font-size:12px;font-weight:500;padding:4px 12px;border-radius:99px;border:1px solid var(--bdr-m);background:transparent;cursor:pointer;color:var(--ink-mu);transition:all .15s;font-family:'DM Sans',sans-serif;}
+.pill{font-size:12px;font-weight:500;padding:4px 12px;border-radius:99px;border:1px solid var(--bdr-m);background:transparent;cursor:pointer;color:var(--ink-mu);font-family:'DM Sans',sans-serif;}
 .pill.active{background:var(--teal-bg);color:var(--teal);border-color:var(--teal-l);font-weight:600;}
 .sel-disp{font-size:13px;color:var(--teal);font-weight:500;margin-top:8px;display:none;}
 .sel-disp.vis{display:block;}
-.vocab-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
-.vocab-meta{font-size:13px;color:var(--ink-mu);}
-.vocab-meta strong{color:var(--teal);}
+.vocab-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;flex-wrap:wrap;gap:8px;}
+.vocab-meta{font-size:13px;color:var(--ink-mu);}.vocab-meta strong{color:var(--teal);}
 .vbtns{display:flex;gap:6px;}
 .vbtn{font-size:12px;font-weight:500;padding:4px 12px;border-radius:99px;border:1px solid var(--bdr-m);background:transparent;cursor:pointer;color:var(--ink-mu);font-family:'DM Sans',sans-serif;}
+.vbtn:hover{background:var(--bg);}
 .term-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:12px;}
-.term-item{display:flex;align-items:center;gap:8px;padding:6px 9px;border-radius:var(--r);border:1px solid var(--bdr);background:var(--bg);cursor:pointer;transition:all .12s;user-select:none;}
-.term-item:hover{border-color:var(--teal-l);background:var(--teal-pale);}
+.term-item{display:flex;align-items:center;gap:7px;padding:6px 9px;border-radius:var(--r);border:1px solid var(--bdr);background:var(--bg);cursor:pointer;user-select:none;}
 .term-item.on{border-color:var(--teal-l);background:var(--teal-bg);}
 .term-item input[type=checkbox]{width:13px;height:13px;accent-color:var(--teal);flex-shrink:0;cursor:pointer;}
-.term-item span{font-size:12px;font-weight:500;color:var(--ink-m);line-height:1.3;}
+.term-item span{font-size:12px;font-weight:500;color:var(--ink-m);}
 .term-item.on span{color:var(--teal);}
 .sel-count{font-size:13px;font-weight:600;color:var(--teal);background:var(--teal-bg);border:1px solid var(--teal-l);border-radius:var(--r);padding:7px 12px;margin-bottom:10px;display:none;}
 .sel-count.vis{display:block;}
 .add-wrap{border-top:1px solid var(--bdr);padding-top:12px;}
 .add-lbl{font-size:12px;font-weight:600;color:var(--ink-mu);margin-bottom:5px;display:block;}
-.add-ta{width:100%;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);background:var(--bg);border:1px solid var(--bdr-m);border-radius:var(--r);padding:9px 12px;resize:vertical;min-height:64px;outline:none;line-height:1.6;transition:border-color .15s;}
+.add-ta{width:100%;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);background:var(--bg);border:1px solid var(--bdr-m);border-radius:var(--r);padding:9px 12px;resize:vertical;min-height:64px;outline:none;line-height:1.6;}
 .add-ta:focus{border-color:var(--teal-l);background:#fff;}
 .add-hint{font-size:11px;color:var(--ink-h);margin-top:3px;}
 .tog-row{display:grid;border:1px solid var(--bdr-m);border-radius:var(--rm);overflow:hidden;margin-bottom:12px;}
-.tog-row.c2{grid-template-columns:1fr 1fr;}.tog-row.c3{grid-template-columns:1fr 1fr 1fr;}.tog-row.c4{grid-template-columns:1fr 1fr 1fr 1fr;}
-.tog{padding:9px 6px;text-align:center;cursor:pointer;color:var(--ink-mu);background:transparent;border:none;font-family:'DM Sans',sans-serif;transition:all .15s;border-left:1px solid var(--bdr);}
-.tog:first-child{border-left:none;}.tog:hover{background:var(--bg);}.tog.active{background:var(--teal-bg);color:var(--teal);font-weight:600;}
+.tog-row.c2{grid-template-columns:1fr 1fr;}.tog-row.c3{grid-template-columns:1fr 1fr 1fr;}
+.tog{padding:9px 6px;text-align:center;cursor:pointer;color:var(--ink-mu);background:transparent;border:none;border-left:1px solid var(--bdr);font-family:'DM Sans',sans-serif;}
+.tog:first-child{border-left:none;}.tog.active{background:var(--teal-bg);color:var(--teal);font-weight:600;}
 .tog .t{display:block;font-size:13px;}.tog .d{display:block;font-size:11px;color:var(--ink-h);margin-top:1px;}.tog.active .d{color:var(--teal);opacity:.8;}
 .ogrid{display:grid;gap:8px;margin-bottom:12px;}
-.ogrid.c2{grid-template-columns:1fr 1fr;}.ogrid.c3{grid-template-columns:repeat(3,1fr);}.ogrid.c4{grid-template-columns:repeat(4,1fr);}
-.gopt{border:1px solid var(--bdr-m);border-radius:var(--rm);padding:10px 8px;cursor:pointer;text-align:center;transition:all .15s;background:var(--surf);}
-.gopt:hover{background:var(--bg);}
-.gopt .gi{display:block;font-size:18px;margin-bottom:4px;}.gopt .gt{display:block;font-size:13px;font-weight:600;color:var(--ink);}.gopt .gd{display:block;font-size:11px;color:var(--ink-h);margin-top:2px;}
-.gopt.active{border-color:var(--teal-l);background:var(--teal-bg);}.gopt.active .gt{color:var(--teal);}.gopt.active .gd{color:var(--teal);opacity:.8;}
-.prog-wrap{display:none;margin-bottom:12px;}.prog-wrap.vis{display:block;}
-.prog-lbl{font-size:13px;color:var(--ink-mu);margin-bottom:7px;display:flex;align-items:center;gap:8px;}
-.spinner{width:12px;height:12px;border:2px solid var(--teal-bg);border-top-color:var(--teal);border-radius:50%;animation:spin .7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.prog-bar{height:4px;background:var(--teal-bg);border-radius:2px;overflow:hidden;}.prog-fill{height:100%;background:var(--teal);border-radius:2px;transition:width .4s ease;}
-.gen-btn{width:100%;padding:13px;font-size:16px;font-weight:600;border-radius:var(--rl);border:none;background:var(--teal);color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:10px;}
-.gen-btn:hover{background:#0A5240;}.gen-btn:disabled{background:var(--teal-l);cursor:not-allowed;}
-.act-btn{font-size:13px;font-weight:600;padding:8px 16px;border-radius:var(--rm);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap;}
-.act-btn.teal{border:1px solid var(--teal-l);background:var(--teal-bg);color:var(--teal);}
-.act-btn.green{border:1px solid var(--green-l);background:var(--green-bg);color:var(--green);}
-.copy-btn{font-size:13px;font-weight:600;padding:7px 16px;border-radius:var(--rm);border:1px solid var(--teal-l);background:var(--teal-bg);color:var(--teal);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap;flex-shrink:0;}
-.copy-btn:hover{background:#9FE1CB;}.copy-btn.copied{background:var(--teal);color:#fff;border-color:var(--teal);}
+.ogrid.c2{grid-template-columns:1fr 1fr;}.ogrid.c3{grid-template-columns:repeat(3,1fr);}
+.gopt{border:1px solid var(--bdr-m);border-radius:var(--rm);padding:10px 8px;cursor:pointer;text-align:center;background:var(--surf);}
+.gopt .gi{display:block;font-size:18px;margin-bottom:4px;}.gopt .gt{display:block;font-size:13px;font-weight:600;}.gopt .gd{display:block;font-size:11px;color:var(--ink-h);margin-top:2px;}
+.gopt.active{border-color:var(--teal-l);background:var(--teal-bg);}.gopt.active .gt{color:var(--teal);}
+.info-box{background:var(--blue-bg);border:1px solid var(--blue-br);border-radius:var(--rm);padding:11px 15px;font-size:13px;color:var(--blue);line-height:1.6;margin-bottom:12px;}
+.info-box strong{color:#0C447C;}
+.gen-btn{width:100%;padding:14px;font-size:16px;font-weight:600;border-radius:var(--rl);border:none;background:var(--teal);color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px;}
+.gen-btn:hover{background:#0A5240;}
 .prev-sec{display:none;margin-top:14px;}.prev-sec.vis{display:block;}
 .tbl-panel{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh);}
 .tbl-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--bdr);flex-wrap:wrap;gap:8px;}
-.tbl-title{font-size:14px;font-weight:600;color:var(--ink);}.tbl-meta{font-size:13px;color:var(--ink-mu);}.tbl-actions{display:flex;gap:8px;}
+.tbl-title{font-size:14px;font-weight:600;}.tbl-meta{font-size:13px;color:var(--ink-mu);}
+.tbl-actions{display:flex;gap:8px;}
 .tbl-wrap{overflow-x:auto;}
 .data-tbl{width:100%;border-collapse:collapse;font-size:12.5px;}
 .data-tbl th{text-align:left;padding:8px 11px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-h);background:var(--bg);border-bottom:1px solid var(--bdr);white-space:nowrap;}
 .data-tbl td{padding:7px 11px;border-bottom:1px solid var(--bdr);vertical-align:top;line-height:1.4;}
 .data-tbl tr:last-child td{border-bottom:none;}
-.data-tbl td.num{color:var(--ink-h);font-size:12px;width:26px;font-weight:600;}
 .data-tbl td input,.data-tbl td textarea{font-family:'DM Sans',sans-serif;font-size:12.5px;color:var(--ink);background:transparent;border:none;border-bottom:1px dashed var(--bdr-m);padding:2px 4px;width:100%;outline:none;resize:none;}
 .data-tbl td input:focus,.data-tbl td textarea:focus{border-bottom-color:var(--teal-l);background:var(--teal-pale);border-radius:3px 3px 0 0;}
-.data-tbl td textarea{min-height:38px;}
+.data-tbl td textarea{min-height:36px;}
+.data-tbl td.num{color:var(--ink-h);font-size:12px;width:26px;font-weight:600;}
+.data-tbl td.term-cell{font-weight:600;color:var(--teal);min-width:140px;}
+.data-tbl td.ph{color:var(--ink-h);font-style:italic;font-size:12px;}
 .del-btn{background:none;border:none;cursor:pointer;color:var(--ink-h);font-size:14px;padding:0 4px;}.del-btn:hover{color:#E24B4A;}
-.out-sec{display:none;margin-top:14px;}.out-sec.vis{display:block;}
-.out-panel{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rl);padding:20px 24px;box-shadow:var(--sh);}
-.out-title{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:4px;}
-.out-sub{font-size:13px;color:var(--ink-mu);margin-bottom:14px;line-height:1.6;}
-.warn-box{background:var(--amber-bg);border:1px solid var(--amber-l);border-radius:var(--rm);padding:10px 14px;margin-bottom:12px;font-size:13px;color:var(--amber);line-height:1.6;}
-.info-box{background:var(--blue-bg);border:1px solid var(--blue-br);border-radius:var(--rm);padding:11px 14px;margin-bottom:12px;font-size:13px;color:var(--blue-dk);line-height:1.6;}
-.chunk-block{margin-bottom:16px;}
-.chunk-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;gap:12px;flex-wrap:wrap;}
-.chunk-label{font-size:13px;font-weight:600;color:var(--ink);}.chunk-count{font-size:12px;font-weight:600;margin-top:2px;}
-.prompt-box{font-family:'Courier New',monospace;font-size:11.5px;color:var(--ink-m);line-height:1.7;background:var(--bg);border:1px solid var(--bdr);border-radius:var(--rm);padding:14px 16px;white-space:pre-wrap;word-break:break-word;max-height:240px;overflow-y:auto;}
-.how-to{background:var(--teal-pale);border:1px solid var(--teal-bg);border-radius:var(--rm);padding:13px 16px;margin-top:12px;}
-.how-to-title{font-size:13px;font-weight:600;color:var(--teal);margin-bottom:8px;}
-.how-to ol{padding-left:17px;}
-.how-to li{font-size:13px;color:var(--ink-m);line-height:1.7;}
-.how-to li strong{color:var(--teal);}
-.how-to code{font-family:'Courier New',monospace;font-size:12px;background:var(--teal-bg);color:var(--teal);padding:1px 5px;border-radius:3px;}
-.mem-info{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--bdr);}
-.mem-tip{background:var(--amber-bg);border:1px solid var(--amber-l);border-radius:var(--r);padding:9px 13px;font-size:12px;color:var(--amber);line-height:1.6;margin-top:10px;}
-.col-key{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+.act-btn{font-size:13px;font-weight:600;padding:8px 16px;border-radius:var(--rm);cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+.act-btn.teal{border:1px solid var(--teal-l);background:var(--teal-bg);color:var(--teal);}
+.act-btn.green{border:1px solid var(--green-l);background:var(--green-bg);color:var(--green);}
+.col-key{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px;}
 .col-item{background:var(--bg);border:1px solid var(--bdr);border-radius:var(--r);padding:9px 11px;}
 .col-name{font-size:11px;font-weight:600;color:var(--teal);font-family:'Courier New',monospace;margin-bottom:3px;}
 .col-desc{font-size:11.5px;color:var(--ink-mu);line-height:1.4;}
-
-/* HOME */
-.home-hdr{background:var(--teal);padding:48px 44px 44px;text-align:center;position:relative;overflow:hidden;}
-.home-hdr::before{content:'';position:absolute;top:-100px;right:-80px;width:380px;height:380px;border-radius:50%;background:rgba(255,255,255,.04);}
-.home-hdr-in{max-width:620px;margin:0 auto;position:relative;}
-.home-eye{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:12px;}
-.home-hdr h1{font-family:'Lora',serif;font-size:32px;color:#fff;line-height:1.2;margin-bottom:10px;}
-.home-hdr h1 em{font-style:italic;color:var(--teal-l);}
-.home-desc{font-size:14px;color:rgba(255,255,255,.78);line-height:1.7;margin-bottom:18px;}
-.home-chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
-.home-chip{font-size:11px;font-weight:500;padding:4px 13px;border-radius:99px;background:rgba(255,255,255,.13);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.2);}
-.home-main{max-width:960px;margin:0 auto;padding:40px 40px 56px;}
-.home-sec-lbl{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-h);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
-.home-sec-lbl::after{content:'';flex:1;height:1px;background:var(--bdr-m);}
-.tool-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:40px;}
-.tool-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rxl);overflow:hidden;box-shadow:var(--sh);transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column;cursor:pointer;}
-.tool-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.12);}
-.card-accent{height:5px;}.card-accent.teal{background:linear-gradient(90deg,var(--teal),var(--teal-l));}.card-accent.blue{background:linear-gradient(90deg,var(--blue),var(--blue-br));}.card-accent.amber{background:linear-gradient(90deg,var(--amber),var(--amber-l));}
-.card-body-h{padding:20px 20px 14px;flex:1;display:flex;flex-direction:column;}
-.card-icon-h{width:42px;height:42px;border-radius:var(--rm);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:12px;}
-.card-icon-h.teal{background:var(--teal-bg);}.card-icon-h.blue{background:var(--blue-bg);}.card-icon-h.amber{background:var(--amber-bg);}
-.card-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}
-.card-lbl.teal{color:var(--teal);}.card-lbl.blue{color:var(--blue);}.card-lbl.amber{color:var(--amber);}
-.card-title-h{font-family:'Lora',serif;font-size:17px;font-weight:600;color:var(--ink);margin-bottom:7px;line-height:1.25;}
-.card-desc-h{font-size:12px;color:var(--ink-mu);line-height:1.6;flex:1;}
-.card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px;}
-.tag{font-size:11px;font-weight:500;padding:3px 9px;border-radius:99px;}
-.tag.teal{background:var(--teal-bg);color:var(--teal);}.tag.blue{background:var(--blue-bg);color:var(--blue);}.tag.amber{background:var(--amber-bg);color:var(--amber);}.tag.gray{background:var(--bg);color:var(--ink-h);border:1px solid var(--bdr-m);}
-.card-ftr{padding:13px 20px;border-top:1px solid var(--bdr);display:flex;align-items:center;justify-content:flex-end;}
-.open-lbl{font-size:12px;font-weight:600;}
-.home-features{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:40px;}
-.feat-h{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rl);padding:14px;text-align:center;}
-.feat-icon-h{font-size:20px;margin-bottom:6px;}.feat-title-h{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px;}.feat-desc-h{font-size:11.5px;color:var(--ink-h);line-height:1.5;}
-.courses{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
-.course-card{border-radius:var(--rl);padding:14px 16px;border:1px solid;}
-.course-card.hs{background:var(--teal-bg);border-color:var(--teal-l);}.course-card.ap{background:var(--blue-bg);border-color:var(--blue-br);}.course-card.nur{background:var(--amber-bg);border-color:var(--amber-l);}
-.cc-title{font-size:13px;font-weight:600;margin-bottom:3px;}.course-card.hs .cc-title{color:var(--teal);}.course-card.ap .cc-title{color:var(--blue);}.course-card.nur .cc-title{color:var(--amber);}
-.cc-note{font-size:11px;color:var(--ink-h);margin-bottom:8px;}
-.subjs{display:flex;flex-wrap:wrap;gap:4px;}.subj{font-size:11px;font-weight:500;padding:2px 8px;border-radius:99px;background:rgba(255,255,255,.7);color:var(--ink-mu);}
-
-/* GUIDE */
-.guide-hdr{background:var(--teal);padding:24px 40px 22px;}
+.col-badge{display:inline-block;font-size:10px;font-weight:600;padding:1px 6px;border-radius:99px;margin-left:4px;}
+.col-badge.filled{background:var(--green-bg);color:var(--green);}
+.col-badge.blank{background:var(--amber-bg);color:var(--amber);}
+.dl-banner{background:var(--green-bg);border:1px solid var(--green-l);border-radius:var(--rl);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px;}
+.dl-title{font-size:14px;font-weight:600;color:var(--green);}
+.dl-sub{font-size:12px;color:var(--green);opacity:.85;margin-top:2px;}
+.guide-main{max-width:860px;margin:0 auto;padding:24px 44px 80px;}
+.guide-hdr{background:var(--teal);padding:28px 44px 24px;}
 .guide-hdr-in{max-width:860px;margin:0 auto;}
 .guide-eye{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:6px;}
 .guide-hdr h2{font-family:'Lora',serif;font-size:24px;color:#fff;margin-bottom:6px;}
-.guide-hdr p{font-size:13px;color:rgba(255,255,255,.72);max-width:500px;line-height:1.6;}
-.guide-main{max-width:860px;margin:0 auto;padding:28px 40px 80px;}
+.guide-hdr p{font-size:13px;color:rgba(255,255,255,.72);max-width:520px;line-height:1.6;}
 .print-bar{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rl);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:10px;flex-wrap:wrap;box-shadow:var(--sh);}
 .print-msg{font-size:13px;color:var(--ink-mu);}
 .print-btn{font-size:13px;font-weight:600;padding:8px 16px;border-radius:var(--rm);border:1px solid var(--teal-l);background:var(--teal-bg);color:var(--teal);cursor:pointer;font-family:'DM Sans',sans-serif;}
 .toc{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rl);padding:18px 22px;margin-bottom:20px;box-shadow:var(--sh);}
 .toc-title{font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-h);margin-bottom:11px;}
-.toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px 18px;}
+.toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;}
 .toc-item{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px;color:var(--teal);font-weight:500;cursor:pointer;}
-.toc-item:hover{color:var(--teal-l);}
 .toc-num{font-size:11px;font-weight:600;width:19px;height:19px;border-radius:50%;background:var(--teal-bg);color:var(--teal);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .gsec{margin-bottom:28px;}
 .gsec-hdr{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--teal-bg);}
 .gsec-num{width:32px;height:32px;border-radius:50%;background:var(--teal);color:#fff;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.gsec-title{font-family:'Lora',serif;font-size:19px;font-weight:600;color:var(--ink);}
+.gsec-title{font-family:'Lora',serif;font-size:19px;font-weight:600;}
 .gsec-sub{font-size:12px;color:var(--ink-mu);margin-top:2px;}
 .gp{font-size:13.5px;color:var(--ink-m);line-height:1.75;margin-bottom:12px;}
-.gsteps{display:flex;flex-direction:column;gap:9px;}
+.gsteps{display:flex;flex-direction:column;gap:9px;margin-bottom:14px;}
 .gstep{display:flex;gap:12px;background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rl);padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
 .gstep-n{width:26px;height:26px;border-radius:50%;background:var(--teal);color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
 .gstep-body{flex:1;}
-.gstep-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:4px;}
+.gstep-title{font-size:13px;font-weight:600;margin-bottom:4px;}
 .gstep-desc{font-size:12.5px;color:var(--ink-mu);line-height:1.6;}
 .gstep-desc code{font-family:'Courier New',monospace;font-size:11.5px;background:var(--teal-bg);color:var(--teal);padding:1px 5px;border-radius:3px;}
-.gstep-note{margin-top:8px;background:var(--bg2);border:1px dashed var(--bdr-m);border-radius:var(--rm);padding:9px 12px;font-size:11.5px;color:var(--ink-h);display:flex;align-items:flex-start;gap:7px;line-height:1.5;}
+.gstep-note{margin-top:8px;background:var(--bg);border:1px dashed var(--bdr-m);border-radius:var(--rm);padding:9px 12px;font-size:11.5px;color:var(--ink-h);display:flex;gap:7px;line-height:1.5;}
 .gcall{border-radius:var(--rm);padding:12px 15px;margin-bottom:12px;display:flex;gap:10px;}
-.gcall.tip{background:var(--teal-bg);border:1px solid var(--teal-l);}.gcall.warn{background:var(--amber-bg);border:1px solid var(--amber-l);}.gcall.info{background:var(--blue-bg);border:1px solid var(--blue-br);}.gcall.ok{background:var(--green-bg);border:1px solid var(--green-l);}
+.gcall.tip{background:var(--teal-bg);border:1px solid var(--teal-l);}
+.gcall.warn{background:var(--amber-bg);border:1px solid var(--amber-l);}
+.gcall.info{background:var(--blue-bg);border:1px solid var(--blue-br);}
+.gcall.ok{background:var(--green-bg);border:1px solid var(--green-l);}
 .gcall-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
 .gcall-body{flex:1;}
 .gcall-title{font-size:13px;font-weight:600;margin-bottom:3px;}
-.gcall.tip .gcall-title{color:var(--teal);}.gcall.warn .gcall-title{color:var(--amber);}.gcall.info .gcall-title{color:var(--blue-dk);}.gcall.ok .gcall-title{color:var(--green);}
+.gcall.tip .gcall-title{color:var(--teal);}.gcall.warn .gcall-title{color:var(--amber);}.gcall.info .gcall-title{color:#0C447C;}.gcall.ok .gcall-title{color:var(--green);}
 .gcall-text{font-size:12.5px;color:var(--ink-mu);line-height:1.6;}
 .gcall-text code{font-family:'Courier New',monospace;font-size:11.5px;background:rgba(0,0,0,.07);padding:1px 5px;border-radius:3px;}
 .gcall-text strong{color:var(--ink);}
-.col-tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:12px;}
-.col-tbl th{text-align:left;padding:7px 11px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-h);background:var(--bg2);border-bottom:1px solid var(--bdr);}
+.col-tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:14px;}
+.col-tbl th{text-align:left;padding:7px 11px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-h);background:var(--bg);border-bottom:1px solid var(--bdr);}
 .col-tbl td{padding:8px 11px;border-bottom:1px solid var(--bdr);vertical-align:top;line-height:1.5;}
 .col-tbl tr:last-child td{border-bottom:none;}
 .col-tbl td:first-child{font-family:'Courier New',monospace;font-size:11.5px;font-weight:600;color:var(--teal);white-space:nowrap;}
 .col-tbl td:nth-child(2){font-size:12px;color:var(--ink-mu);}
-.col-tbl td:last-child{font-size:12px;color:var(--ink-h);}
+.col-tbl td:last-child{font-size:12px;}
 .cbadge{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:99px;}
-.cbadge.front{background:var(--teal-bg);color:var(--teal);}.cbadge.back{background:var(--amber-bg);color:var(--amber);}.cbadge.qa{background:var(--purple-bg);color:var(--purple);}.cbadge.ref{background:var(--bg2);color:var(--ink-h);}
-.faq{display:flex;flex-direction:column;gap:7px;margin-bottom:12px;}
+.cbadge.auto{background:var(--green-bg);color:var(--green);}
+.cbadge.manual{background:var(--amber-bg);color:var(--amber);}
+.faq{display:flex;flex-direction:column;gap:7px;}
 .faq-item{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rm);overflow:hidden;}
-.faq-q{padding:11px 15px;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;}
-.faq-q::after{content:'＋';font-size:14px;color:var(--teal);flex-shrink:0;}
-.faq-item.open .faq-q::after{content:'－';}
+.faq-q{padding:11px 15px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;}
+.faq-q::after{content:'\002B';font-size:14px;color:var(--teal);flex-shrink:0;}
+.faq-item.open .faq-q::after{content:'\2212';}
 .faq-a{display:none;padding:0 15px 12px;font-size:12.5px;color:var(--ink-mu);line-height:1.65;border-top:1px solid var(--bdr);}
 .faq-item.open .faq-a{display:block;padding-top:10px;}
 .faq-a code{font-family:'Courier New',monospace;font-size:11.5px;background:var(--teal-bg);color:var(--teal);padding:1px 5px;border-radius:3px;}
-.faq-a strong{color:var(--ink);}
-.gloss-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;}
-.gloss-item{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rm);padding:10px 12px;}
-.gloss-term{font-family:'Courier New',monospace;font-size:12px;font-weight:600;color:var(--teal);margin-bottom:3px;}
-.gloss-def{font-size:11.5px;color:var(--ink-mu);line-height:1.5;}
-.footer{background:var(--teal);padding:22px 40px;text-align:center;}
-.footer-text{font-size:12px;color:rgba(255,255,255,.7);line-height:1.6;}
+.footer{background:var(--teal);padding:20px 40px;text-align:center;}
+.footer-text{font-size:12px;color:rgba(255,255,255,.7);}
 .footer-text strong{color:#fff;}
-@media(max-width:720px){
-  .tool-main,.guide-main,.home-main{padding:18px 14px 60px;}
-  .home-hdr,.guide-hdr{padding:28px 16px 24px;}
-  .home-hdr h1{font-size:26px;}
-  .tool-grid,.home-features{grid-template-columns:1fr;}
-  .courses{grid-template-columns:1fr;}
-  .term-grid,.col-key,.toc-grid,.gloss-grid{grid-template-columns:1fr 1fr;}
-  .ogrid.c3,.ogrid.c4{grid-template-columns:repeat(2,1fr);}
-  .tog-row.c4{grid-template-columns:1fr 1fr;}
-  .nav-brand{display:none;}
-}
+@media(max-width:640px){.main,.guide-main{padding:18px 16px 60px;}.tool-hdr,.guide-hdr{padding:24px 16px 20px;}.term-grid{grid-template-columns:1fr 1fr;}.col-key,.toc-grid{grid-template-columns:1fr;}.nav-brand{display:none;}}
 @media print{.nav,.print-bar{display:none;}body{background:#fff;}.gsec{page-break-inside:avoid;}}
 </style>
 </head>
 <body>
-<!-- NAV -->
-<nav class="nav"><div class="nav-in"><div class="nav-brand"><span>🩺</span> NC Health Science</div><div class="nav-tabs"><button class="nav-tab active" onclick="showPage('home')">🏠 Home</button><button class="nav-tab" onclick="showPage('cc')">🃏 Canva Code</button><button class="nav-tab" onclick="showPage('bc')">🖨 Bulk Create CSV</button><button class="nav-tab" onclick="showPage('guide')">📖 Teacher Guide</button></div></div></nav>
 
-<!-- HOME PAGE -->
-<div id="page-home" class="page active">
-<div class="home-hdr"><div class="home-hdr-in"><div class="home-eye">NC CTE Health Science · Ashe County Schools</div><h1>Health Science<br><em>Study Card Tools</em></h1><p class="home-desc">NC standards-aligned vocabulary tools for Health Science I, Anatomy &amp; Physiology, and CTE Nurse Aide — bilingual support included. Build interactive digital activities and print-ready card sets in minutes.</p><div class="home-chips"><span class="home-chip">NC CTE Aligned</span><span class="home-chip">Pre-loaded Vocabulary</span><span class="home-chip">English + Spanish</span><span class="home-chip">AI-Powered</span></div></div></div>
-<div class="home-main">
-<div class="home-sec-lbl">The tools</div>
-<div class="tool-grid">
-<div class="tool-card" onclick="showPage('cc')"><div class="card-accent teal"></div><div class="card-body-h"><div class="card-icon-h teal">🃏</div><div class="card-lbl teal">Digital · Interactive</div><div class="card-title-h">Canva Code Prompt Writer</div><div class="card-desc-h">Generate a complete interactive flashcard deck or memory match game. Paste the ready-made prompt into Canva Code — no coding needed. Works on Chromebooks, tablets, and phones.</div><div class="card-tags"><span class="tag teal">Flashcard deck</span><span class="tag teal">Memory match</span><span class="tag gray">Flip animations</span></div></div><div class="card-ftr"><span class="open-lbl" style="color:var(--teal);">Open tool →</span></div></div>
-<div class="tool-card" onclick="showPage('bc')"><div class="card-accent blue"></div><div class="card-body-h"><div class="card-icon-h blue">🖨</div><div class="card-lbl blue">Printable · Physical Cards</div><div class="card-title-h">Bulk Create CSV Generator</div><div class="card-desc-h">Build a full set of printable study cards or Q&amp;A matching pairs. Downloads a CSV with terms, Spanish, definitions, and AI image prompts — ready for Canva Bulk Create.</div><div class="card-tags"><span class="tag blue">Study cards</span><span class="tag blue">Q&amp;A pairs</span><span class="tag gray">CSV download</span></div></div><div class="card-ftr"><span class="open-lbl" style="color:var(--blue);">Open tool →</span></div></div>
-<div class="tool-card" onclick="showPage('guide')"><div class="card-accent amber"></div><div class="card-body-h"><div class="card-icon-h amber">📖</div><div class="card-lbl amber">Teacher Reference</div><div class="card-title-h">Bulk Create Teacher Guide</div><div class="card-desc-h">Step-by-step instructions for teachers new to Canva Bulk Create — template setup, CSV upload, AI illustrations, printing double-sided cards, and the Q&amp;A pairs workflow.</div><div class="card-tags"><span class="tag amber">Step-by-step</span><span class="tag amber">Q&amp;A pairs</span><span class="tag gray">FAQ</span></div></div><div class="card-ftr"><span class="open-lbl" style="color:var(--amber);">Open guide →</span></div></div>
-</div>
-<div class="home-sec-lbl">What's included</div>
-<div class="home-features">
-<div class="feat-h"><div class="feat-icon-h">🇪🇸</div><div class="feat-title-h">Bilingual support</div><div class="feat-desc-h">English, Spanish, or bilingual — AI generates accurate medical translations</div></div>
-<div class="feat-h"><div class="feat-icon-h">🧠</div><div class="feat-title-h">AI auto-fill</div><div class="feat-desc-h">Definitions, translations, image descriptions, and exam questions in one click</div></div>
-<div class="feat-h"><div class="feat-icon-h">🎯</div><div class="feat-title-h">NC standards-aligned</div><div class="feat-desc-h">Pre-loaded vocabulary for every HU40, A&amp;P, and NNAAP subject area</div></div>
-<div class="feat-h"><div class="feat-icon-h">🖨</div><div class="feat-title-h">Print or digital</div><div class="feat-desc-h">Canva Code widgets for devices, or CSV for printed physical cards</div></div>
-</div>
-<div class="home-sec-lbl">Courses and subject areas covered</div>
-<div class="courses">
-<div class="course-card hs"><div class="cc-title">Health Science I — HU40</div><div class="cc-note">Essential standards 1.00–4.03</div><div class="subjs"><span class="subj">Skeletal</span><span class="subj">Muscular</span><span class="subj">Integumentary</span><span class="subj">Digestive</span><span class="subj">Urinary</span><span class="subj">Nervous</span><span class="subj">Sensory</span><span class="subj">Lymphatic</span><span class="subj">Endocrine</span><span class="subj">Reproductive</span><span class="subj">Body Organization</span><span class="subj">First Responder</span></div></div>
-<div class="course-card ap"><div class="cc-title">Anatomy &amp; Physiology</div><div class="cc-note">Full structural and physiological depth</div><div class="subjs"><span class="subj">Cells &amp; Histology</span><span class="subj">Skeletal</span><span class="subj">Muscular</span><span class="subj">Nervous</span><span class="subj">Blood</span><span class="subj">Cardiovascular</span><span class="subj">Respiratory</span><span class="subj">Digestive</span><span class="subj">Urinary</span><span class="subj">Reproductive</span><span class="subj">Fluid Balance</span><span class="subj">Metabolism</span></div></div>
-<div class="course-card nur"><div class="cc-title">CTE Nursing / Nurse Aide I</div><div class="cc-note">NNAAP Modules A–H aligned</div><div class="subjs"><span class="subj">Infection Control</span><span class="subj">Vital Signs</span><span class="subj">Medical Terminology</span><span class="subj">Patient Rights</span><span class="subj">Personal Care</span><span class="subj">Cardiovascular</span><span class="subj">Respiratory</span><span class="subj">Musculoskeletal</span><span class="subj">Nervous</span><span class="subj">Integumentary</span><span class="subj">Nutrition</span><span class="subj">Endocrine</span></div></div>
-</div>
-</div>
-<div class="footer"><div class="footer-text">Built for <strong>NC CTE Health Science teachers</strong> at Ashe County High School &amp; beyond · Aligned to NC DPI CTE standards · Canva for Education required</div></div>
-</div>
-<!-- CANVA CODE PAGE -->
-<div id="page-cc" class="page">
-<div style="background:var(--teal);padding:24px 40px 20px;"><div style="max-width:940px;margin:0 auto;"><div style="font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:5px;">Canva Code Prompt Writer</div><h2 style="font-family:'Lora',serif;font-size:22px;color:#fff;margin-bottom:5px;">Interactive Activity Generator</h2><p style="font-size:13px;color:rgba(255,255,255,.72);">NC standards vocab pre-loaded. Choose flashcard deck or memory match game. Get ready-to-paste Canva Code prompts.</p></div></div>
-<div class="tool-main">
-<div class="panel"><div class="step-hdr"><div class="step-n">1</div><div class="step-lbl">Choose course and subject area</div></div>
-<div class="ctabs"><button class="ctab a-hs" id="cc-tab-hs" onclick="cc_switchCourse('hs')">Health Science I</button><button class="ctab" id="cc-tab-ap" onclick="cc_switchCourse('ap')">Anatomy &amp; Physiology</button><button class="ctab" id="cc-tab-nur" onclick="cc_switchCourse('nur')">CTE Nursing / Nurse Aide</button></div>
-<div class="spanel vis" id="cc-panel-hs"><p class="cnote">HU40 Health Science I — essential standards 1.00–4.03</p><div class="pills" id="cc-pills-hs"><button class="pill active" data-val="Skeletal System">Skeletal System</button><button class="pill" data-val="Muscular System">Muscular System</button><button class="pill" data-val="Integumentary System">Integumentary System</button><button class="pill" data-val="Digestive System">Digestive System</button><button class="pill" data-val="Urinary System">Urinary System</button><button class="pill" data-val="Nervous System">Nervous System</button><button class="pill" data-val="Sensory System">Sensory / Special Senses</button><button class="pill" data-val="Lymphatic & Immune System">Lymphatic &amp; Immune</button><button class="pill" data-val="Endocrine System">Endocrine System</button><button class="pill" data-val="Reproductive System">Reproductive System</button><button class="pill" data-val="Body Organization & Homeostasis">Body Organization &amp; Homeostasis</button><button class="pill" data-val="First Responder / Emergency Care">First Responder / Emergency Care</button></div></div>
-<div class="spanel" id="cc-panel-ap"><p class="cnote">Anatomy &amp; Physiology — structural and physiological depth</p><div class="pills" id="cc-pills-ap"><button class="pill active" data-val="Cells & Histology">Cells &amp; Histology</button><button class="pill" data-val="Integumentary System">Integumentary System</button><button class="pill" data-val="Skeletal System">Skeletal System</button><button class="pill" data-val="Muscular System">Muscular System</button><button class="pill" data-val="Nervous System">Nervous System</button><button class="pill" data-val="Sensory System">Sensory / Special Senses</button><button class="pill" data-val="Endocrine System">Endocrine System</button><button class="pill" data-val="Blood & Hematology">Blood &amp; Hematology</button><button class="pill" data-val="Cardiovascular System">Cardiovascular System</button><button class="pill" data-val="Lymphatic & Immune System">Lymphatic &amp; Immune</button><button class="pill" data-val="Respiratory System">Respiratory System</button><button class="pill" data-val="Digestive System">Digestive System</button><button class="pill" data-val="Urinary System">Urinary System</button><button class="pill" data-val="Reproductive System">Reproductive System</button><button class="pill" data-val="Fluid & Acid-Base Balance">Fluid &amp; Acid-Base Balance</button><button class="pill" data-val="Metabolism & Nutrition">Metabolism &amp; Nutrition</button></div></div>
-<div class="spanel" id="cc-panel-nur"><p class="cnote">NC Nurse Aide I (NNAAP) — Modules A–H aligned vocabulary</p><div class="pills" id="cc-pills-nur"><button class="pill active" data-val="Infection Control & Safety">Infection Control &amp; Safety</button><button class="pill" data-val="Vital Signs & Measurement">Vital Signs &amp; Measurement</button><button class="pill" data-val="Medical Terminology">Medical Terminology</button><button class="pill" data-val="Patient Rights & Communication">Patient Rights &amp; Communication</button><button class="pill" data-val="Personal Care & ADLs">Personal Care &amp; ADLs</button><button class="pill" data-val="Cardiovascular System">Cardiovascular System</button><button class="pill" data-val="Respiratory System">Respiratory System</button><button class="pill" data-val="Musculoskeletal System">Musculoskeletal System</button><button class="pill" data-val="Nervous System">Nervous System</button><button class="pill" data-val="Integumentary System">Integumentary System</button><button class="pill" data-val="Urinary System">Urinary System</button><button class="pill" data-val="Digestive System">Digestive System</button><button class="pill" data-val="Endocrine System">Endocrine System</button><button class="pill" data-val="Nutrition & Fluid Intake">Nutrition &amp; Fluid Intake</button></div></div>
-<div class="sel-disp" id="cc-selDisp"></div></div>
+<nav class="nav"><div class="nav-in">
+  <div class="nav-brand">&#129658; NC Health Science</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('csv')">&#11015; Bulk Create CSV Builder</button>
+    <button class="nav-tab" onclick="showPage('guide')">&#128216; Teacher Guide</button>
+  </div>
+</div></nav>
 
-<div class="panel"><div class="step-hdr"><div class="step-n">2</div><div class="step-lbl">Select vocabulary terms</div><div class="step-sub">NC standards-based</div></div>
-<div class="vocab-bar"><div class="vocab-meta" id="cc-vocabMeta">Select a subject above</div><div class="vbtns"><button class="vbtn" onclick="cc_selectAll()">Select all</button><button class="vbtn" onclick="cc_deselectAll()">Deselect all</button></div></div>
-<div class="term-grid" id="cc-termGrid"></div>
-<div class="sel-count" id="cc-selCount"></div>
-<div class="add-wrap"><span class="add-lbl">Add your own terms <span style="font-weight:400;color:var(--ink-h);">— one per line</span></span><textarea class="add-ta" id="cc-addInput" placeholder="Add extra terms..." oninput="cc_updateSelCount()"></textarea><div class="add-hint">Included alongside checked terms.</div></div></div>
-
-<div class="panel"><div class="step-hdr"><div class="step-n">3</div><div class="step-lbl">Settings</div></div>
-<span class="sec-lbl">Language mode</span>
-<div class="tog-row c3" id="cc-langTog"><button class="tog active" data-val="bilingual" onclick="cc_setLang('bilingual')"><span class="t">Bilingual</span><span class="d">English + Spanish</span></button><button class="tog" data-val="english" onclick="cc_setLang('english')"><span class="t">English only</span><span class="d">Single language</span></button><button class="tog" data-val="spanish" onclick="cc_setLang('spanish')"><span class="t">Spanish only</span><span class="d">Single language</span></button></div>
-<span class="sec-lbl">Difficulty level</span>
-<div class="ogrid c3" id="cc-diffGrid"><div class="gopt active" data-val="basic"><span class="gi">📗</span><span class="gt">Basic</span><span class="gd">Introductory</span></div><div class="gopt" data-val="intermediate"><span class="gi">📘</span><span class="gt">Intermediate</span><span class="gd">Grade-level</span></div><div class="gopt" data-val="advanced"><span class="gi">📕</span><span class="gt">Advanced</span><span class="gd">Clinical / AP</span></div></div>
-<span class="sec-lbl">Visual theme</span>
-<div class="ogrid c4" id="cc-themeGrid"><div class="gopt active" data-val="medical-clean"><span class="gi">🏥</span><span class="gt">Medical clean</span><span class="gd">White &amp; teal</span></div><div class="gopt" data-val="nature-green"><span class="gi">🌿</span><span class="gt">Nature green</span><span class="gd">Soft greens</span></div><div class="gopt" data-val="bold-navy"><span class="gi">🔬</span><span class="gt">Bold navy</span><span class="gd">Deep blue</span></div><div class="gopt" data-val="warm-coral"><span class="gi">🩺</span><span class="gt">Warm coral</span><span class="gd">Warm tones</span></div></div></div>
-
-<div class="panel"><div class="step-hdr"><div class="step-n">4</div><div class="step-lbl">Activity type</div></div>
-<div class="ogrid c2" id="cc-outputGrid"><div class="gopt active" data-val="flashcard"><span class="gi">🃏</span><span class="gt">Flashcard deck</span><span class="gd">Flip cards — study term &amp; definition</span></div><div class="gopt" data-val="memory"><span class="gi">🧩</span><span class="gt">Memory match game</span><span class="gd">Flip pairs — find the match</span></div></div>
-<div id="cc-flashcardOpts"><span class="sec-lbl" style="margin-top:4px;">Interactive features</span><div class="ogrid c4" id="cc-featGrid"><div class="gopt active feat" data-val="progress"><span class="gi">📊</span><span class="gt">Progress</span><span class="gd">Card X of Y</span></div><div class="gopt active feat" data-val="shuffle"><span class="gi">🔀</span><span class="gt">Shuffle</span><span class="gd">Randomize</span></div><div class="gopt active feat" data-val="score"><span class="gi">⭐</span><span class="gt">Know / Learning</span><span class="gd">Self-assessment</span></div><div class="gopt feat" data-val="keyboard"><span class="gi">⌨️</span><span class="gt">Keyboard nav</span><span class="gd">Arrows + space</span></div></div></div>
-<div class="mem-info" id="cc-memOpts"><span class="sec-lbl">Match pair type</span><div class="tog-row c2" id="cc-matchTog"><button class="tog active" data-val="term-spanish" onclick="cc_setMatch('term-spanish')"><span class="t">Term ↔ Spanish</span><span class="d">Match English to Spanish</span></button><button class="tog" data-val="term-definition" onclick="cc_setMatch('term-definition')"><span class="t">Term ↔ Definition</span><span class="d">Match term to definition</span></button></div><div class="mem-tip"><strong>Tip:</strong> Memory games work best with 8–12 pairs. More than 12 creates a very large grid on Chromebook screens.</div></div></div>
-
-<div class="prog-wrap" id="cc-progWrap"><div class="prog-lbl"><div class="spinner"></div><span id="cc-progLbl">Generating...</span></div><div class="prog-bar"><div class="prog-fill" id="cc-progFill" style="width:0%"></div></div></div>
-<button class="gen-btn" id="cc-genBtn" onclick="cc_generate()"><span id="cc-genIcon">✦</span><span id="cc-genTxt">Generate Flashcard Deck Prompt</span></button>
-<div class="prev-sec" id="cc-prevSec"><div class="tbl-panel"><div class="tbl-hdr"><div><div class="tbl-title">Review &amp; edit card data</div><div class="tbl-meta" id="cc-prevCnt"></div></div><button class="act-btn teal" onclick="cc_buildOutput()">Rebuild prompts</button></div><div class="tbl-wrap"><table class="data-tbl"><thead><tr><th>#</th><th>Term</th><th id="cc-esHdr">Spanish</th><th>Definition</th><th></th></tr></thead><tbody id="cc-cardBody"></tbody></table></div></div></div>
-<div class="out-sec" id="cc-outSec"></div>
+<!-- CSV BUILDER PAGE -->
+<div id="page-csv" class="page active">
+<div class="tool-hdr"><div class="tool-hdr-in">
+  <div class="hdr-eye">NC CTE Health Science - Ashe County Schools</div>
+  <h1>Canva Bulk Create CSV Builder</h1>
+  <p>Select NC standards vocabulary, choose your card settings, and download a CSV ready to upload to Canva Bulk Create. Fill in definitions and Spanish translations in Excel or Google Sheets, then import into Canva to generate your full card set automatically.</p>
+  <div class="hdr-chips">
+    <span class="chip">Free to use</span>
+    <span class="chip">No API key needed</span>
+    <span class="chip">NC CTE Aligned</span>
+    <span class="chip">Study Cards and Q&amp;A Pairs</span>
+    <span class="chip">Bilingual Support</span>
+  </div>
 </div></div>
-<!-- BULK CREATE PAGE -->
-<div id="page-bc" class="page">
-<div style="background:linear-gradient(135deg,#0F6E56,#185FA5);padding:24px 40px 20px;"><div style="max-width:940px;margin:0 auto;"><div style="font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:5px;">Canva Bulk Create Generator</div><h2 style="font-family:'Lora',serif;font-size:22px;color:#fff;margin-bottom:5px;">Health Science Study Card CSV Builder</h2><p style="font-size:13px;color:rgba(255,255,255,.72);">Select terms, generate definitions and image prompts, download CSV — ready for Canva Bulk Create. Study cards, Q&amp;A pairs, or both.</p></div></div>
-<div class="tool-main">
-<div class="panel"><div class="step-hdr"><div class="step-n">1</div><div class="step-lbl">Choose course and subject area</div></div>
-<div class="ctabs"><button class="ctab a-hs" id="bc-tab-hs" onclick="bc_switchCourse('hs')">Health Science I</button><button class="ctab" id="bc-tab-ap" onclick="bc_switchCourse('ap')">Anatomy &amp; Physiology</button><button class="ctab" id="bc-tab-nur" onclick="bc_switchCourse('nur')">CTE Nursing / Nurse Aide</button></div>
-<div class="spanel vis" id="bc-panel-hs"><p class="cnote">HU40 Health Science I — essential standards 1.00–4.03</p><div class="pills" id="bc-pills-hs"><button class="pill active" data-val="Skeletal System">Skeletal System</button><button class="pill" data-val="Muscular System">Muscular System</button><button class="pill" data-val="Integumentary System">Integumentary System</button><button class="pill" data-val="Digestive System">Digestive System</button><button class="pill" data-val="Urinary System">Urinary System</button><button class="pill" data-val="Nervous System">Nervous System</button><button class="pill" data-val="Sensory System">Sensory / Special Senses</button><button class="pill" data-val="Lymphatic & Immune System">Lymphatic &amp; Immune</button><button class="pill" data-val="Endocrine System">Endocrine System</button><button class="pill" data-val="Reproductive System">Reproductive System</button><button class="pill" data-val="Body Organization & Homeostasis">Body Organization &amp; Homeostasis</button><button class="pill" data-val="First Responder / Emergency Care">First Responder / Emergency Care</button></div></div>
-<div class="spanel" id="bc-panel-ap"><p class="cnote">Anatomy &amp; Physiology — structural and physiological depth</p><div class="pills" id="bc-pills-ap"><button class="pill active" data-val="Cells & Histology">Cells &amp; Histology</button><button class="pill" data-val="Integumentary System">Integumentary System</button><button class="pill" data-val="Skeletal System">Skeletal System</button><button class="pill" data-val="Muscular System">Muscular System</button><button class="pill" data-val="Nervous System">Nervous System</button><button class="pill" data-val="Sensory System">Sensory / Special Senses</button><button class="pill" data-val="Endocrine System">Endocrine System</button><button class="pill" data-val="Blood & Hematology">Blood &amp; Hematology</button><button class="pill" data-val="Cardiovascular System">Cardiovascular System</button><button class="pill" data-val="Lymphatic & Immune System">Lymphatic &amp; Immune</button><button class="pill" data-val="Respiratory System">Respiratory System</button><button class="pill" data-val="Digestive System">Digestive System</button><button class="pill" data-val="Urinary System">Urinary System</button><button class="pill" data-val="Reproductive System">Reproductive System</button><button class="pill" data-val="Fluid & Acid-Base Balance">Fluid &amp; Acid-Base Balance</button><button class="pill" data-val="Metabolism & Nutrition">Metabolism &amp; Nutrition</button></div></div>
-<div class="spanel" id="bc-panel-nur"><p class="cnote">NC Nurse Aide I (NNAAP) — Modules A–H aligned vocabulary</p><div class="pills" id="bc-pills-nur"><button class="pill active" data-val="Infection Control & Safety">Infection Control &amp; Safety</button><button class="pill" data-val="Vital Signs & Measurement">Vital Signs &amp; Measurement</button><button class="pill" data-val="Medical Terminology">Medical Terminology</button><button class="pill" data-val="Patient Rights & Communication">Patient Rights &amp; Communication</button><button class="pill" data-val="Personal Care & ADLs">Personal Care &amp; ADLs</button><button class="pill" data-val="Cardiovascular System">Cardiovascular System</button><button class="pill" data-val="Respiratory System">Respiratory System</button><button class="pill" data-val="Musculoskeletal System">Musculoskeletal System</button><button class="pill" data-val="Nervous System">Nervous System</button><button class="pill" data-val="Integumentary System">Integumentary System</button><button class="pill" data-val="Urinary System">Urinary System</button><button class="pill" data-val="Digestive System">Digestive System</button><button class="pill" data-val="Endocrine System">Endocrine System</button><button class="pill" data-val="Nutrition & Fluid Intake">Nutrition &amp; Fluid Intake</button></div></div>
-<div class="sel-disp" id="bc-selDisp"></div></div>
 
-<div class="panel"><div class="step-hdr"><div class="step-n">2</div><div class="step-lbl">Select vocabulary terms</div><div class="step-sub">NC standards-based</div></div>
-<div class="vocab-bar"><div class="vocab-meta" id="bc-vocabMeta">Select a subject above</div><div class="vbtns"><button class="vbtn" onclick="bc_selectAll()">Select all</button><button class="vbtn" onclick="bc_deselectAll()">Deselect all</button></div></div>
-<div class="term-grid" id="bc-termGrid"></div>
-<div class="sel-count" id="bc-selCount"></div>
-<div class="add-wrap"><span class="add-lbl">Add your own terms <span style="font-weight:400;color:var(--ink-h);">— one per line</span></span><textarea class="add-ta" id="bc-addInput" placeholder="Add extra terms..." oninput="bc_updateSelCount()"></textarea><div class="add-hint">Included alongside checked terms.</div></div></div>
+<div class="main">
 
-<div class="panel"><div class="step-hdr"><div class="step-n">3</div><div class="step-lbl">Card settings</div></div>
-<span class="sec-lbl">Language mode</span>
-<div class="tog-row c3" id="bc-langTog"><button class="tog active" data-val="bilingual" onclick="bc_setLang('bilingual')"><span class="t">Bilingual</span><span class="d">English + Spanish</span></button><button class="tog" data-val="english" onclick="bc_setLang('english')"><span class="t">English only</span><span class="d">Single language</span></button><button class="tog" data-val="spanish" onclick="bc_setLang('spanish')"><span class="t">Spanish only</span><span class="d">Single language</span></button></div>
-<span class="sec-lbl">Difficulty level</span>
-<div class="ogrid c3" id="bc-diffGrid"><div class="gopt active" data-val="basic"><span class="gi">📗</span><span class="gt">Basic</span><span class="gd">Introductory</span></div><div class="gopt" data-val="intermediate"><span class="gi">📘</span><span class="gt">Intermediate</span><span class="gd">Grade-level</span></div><div class="gopt" data-val="advanced"><span class="gi">📕</span><span class="gt">Advanced</span><span class="gd">Clinical / AP</span></div></div>
-<span class="sec-lbl">Illustration labels</span>
-<div class="tog-row c2" id="bc-labelTog"><button class="tog active" data-val="labeled" onclick="bc_setLabels('labeled')"><span class="t">Labeled</span><span class="d">Callout labels on image</span></button><button class="tog" data-val="unlabeled" onclick="bc_setLabels('unlabeled')"><span class="t">Unlabeled</span><span class="d">Clean image, no text</span></button></div>
-<span class="sec-lbl">Card back</span>
-<div class="tog-row c2" id="bc-backTog"><button class="tog active" data-val="image-only" onclick="bc_setBack('image-only')"><span class="t">Image only</span><span class="d">Student recalls term before flipping</span></button><button class="tog" data-val="image-term" onclick="bc_setBack('image-term')"><span class="t">Image + term</span><span class="d">Illustration with term at bottom</span></button></div>
+<div class="panel">
+<div class="step-hdr"><div class="step-n">1</div><div class="step-lbl">Choose course and subject area</div></div>
+<div class="ctabs">
+  <button class="ctab a-hs" id="tab-hs" onclick="switchCourse('hs')">Health Science I</button>
+  <button class="ctab" id="tab-ap" onclick="switchCourse('ap')">Anatomy and Physiology</button>
+  <button class="ctab" id="tab-nur" onclick="switchCourse('nur')">CTE Nursing / Nurse Aide</button>
+</div>
+<div class="spanel vis" id="panel-hs"><p class="cnote">HU40 Health Science I - essential standards 1.00-4.03</p><div class="pills" id="pills-hs">
+  <button class="pill active" data-val="Skeletal System" onclick="selectSubject(this,'hs')">Skeletal System</button>
+  <button class="pill" data-val="Muscular System" onclick="selectSubject(this,'hs')">Muscular System</button>
+  <button class="pill" data-val="Integumentary System" onclick="selectSubject(this,'hs')">Integumentary System</button>
+  <button class="pill" data-val="Digestive System" onclick="selectSubject(this,'hs')">Digestive System</button>
+  <button class="pill" data-val="Urinary System" onclick="selectSubject(this,'hs')">Urinary System</button>
+  <button class="pill" data-val="Nervous System" onclick="selectSubject(this,'hs')">Nervous System</button>
+  <button class="pill" data-val="Sensory System" onclick="selectSubject(this,'hs')">Sensory / Special Senses</button>
+  <button class="pill" data-val="Lymphatic and Immune System" onclick="selectSubject(this,'hs')">Lymphatic and Immune</button>
+  <button class="pill" data-val="Endocrine System" onclick="selectSubject(this,'hs')">Endocrine System</button>
+  <button class="pill" data-val="Reproductive System" onclick="selectSubject(this,'hs')">Reproductive System</button>
+  <button class="pill" data-val="Body Organization and Homeostasis" onclick="selectSubject(this,'hs')">Body Organization and Homeostasis</button>
+  <button class="pill" data-val="First Responder and Emergency Care" onclick="selectSubject(this,'hs')">First Responder / Emergency Care</button>
+</div></div>
+<div class="spanel" id="panel-ap"><p class="cnote">Anatomy and Physiology - structural and physiological depth</p><div class="pills" id="pills-ap">
+  <button class="pill active" data-val="Cells and Histology" onclick="selectSubject(this,'ap')">Cells and Histology</button>
+  <button class="pill" data-val="Skeletal System" onclick="selectSubject(this,'ap')">Skeletal System</button>
+  <button class="pill" data-val="Muscular System" onclick="selectSubject(this,'ap')">Muscular System</button>
+  <button class="pill" data-val="Nervous System" onclick="selectSubject(this,'ap')">Nervous System</button>
+  <button class="pill" data-val="Endocrine System" onclick="selectSubject(this,'ap')">Endocrine System</button>
+  <button class="pill" data-val="Blood and Hematology" onclick="selectSubject(this,'ap')">Blood and Hematology</button>
+  <button class="pill" data-val="Cardiovascular System" onclick="selectSubject(this,'ap')">Cardiovascular System</button>
+  <button class="pill" data-val="Respiratory System" onclick="selectSubject(this,'ap')">Respiratory System</button>
+  <button class="pill" data-val="Digestive System" onclick="selectSubject(this,'ap')">Digestive System</button>
+  <button class="pill" data-val="Urinary System" onclick="selectSubject(this,'ap')">Urinary System</button>
+  <button class="pill" data-val="Reproductive System" onclick="selectSubject(this,'ap')">Reproductive System</button>
+  <button class="pill" data-val="Fluid and Acid-Base Balance" onclick="selectSubject(this,'ap')">Fluid and Acid-Base Balance</button>
+  <button class="pill" data-val="Metabolism and Nutrition" onclick="selectSubject(this,'ap')">Metabolism and Nutrition</button>
+</div></div>
+<div class="spanel" id="panel-nur"><p class="cnote">NC Nurse Aide I (NNAAP) - Modules A-H aligned vocabulary</p><div class="pills" id="pills-nur">
+  <button class="pill active" data-val="Infection Control and Safety" onclick="selectSubject(this,'nur')">Infection Control and Safety</button>
+  <button class="pill" data-val="Vital Signs and Measurement" onclick="selectSubject(this,'nur')">Vital Signs and Measurement</button>
+  <button class="pill" data-val="Medical Terminology" onclick="selectSubject(this,'nur')">Medical Terminology</button>
+  <button class="pill" data-val="Patient Rights and Communication" onclick="selectSubject(this,'nur')">Patient Rights and Communication</button>
+  <button class="pill" data-val="Personal Care and ADLs" onclick="selectSubject(this,'nur')">Personal Care and ADLs</button>
+  <button class="pill" data-val="Cardiovascular System" onclick="selectSubject(this,'nur')">Cardiovascular System</button>
+  <button class="pill" data-val="Respiratory System" onclick="selectSubject(this,'nur')">Respiratory System</button>
+  <button class="pill" data-val="Musculoskeletal System" onclick="selectSubject(this,'nur')">Musculoskeletal System</button>
+  <button class="pill" data-val="Nervous System" onclick="selectSubject(this,'nur')">Nervous System</button>
+  <button class="pill" data-val="Integumentary System" onclick="selectSubject(this,'nur')">Integumentary System</button>
+  <button class="pill" data-val="Urinary System" onclick="selectSubject(this,'nur')">Urinary System</button>
+  <button class="pill" data-val="Digestive System" onclick="selectSubject(this,'nur')">Digestive System</button>
+  <button class="pill" data-val="Endocrine System" onclick="selectSubject(this,'nur')">Endocrine System</button>
+  <button class="pill" data-val="Nutrition and Fluid Intake" onclick="selectSubject(this,'nur')">Nutrition and Fluid Intake</button>
+</div></div>
+<div class="sel-disp" id="selDisp"></div>
+</div>
+
+<div class="panel">
+<div class="step-hdr"><div class="step-n">2</div><div class="step-lbl">Select vocabulary terms</div><div class="step-sub">NC standards-based</div></div>
+<div class="vocab-bar">
+  <div class="vocab-meta" id="vocabMeta">Select a subject above to load terms</div>
+  <div class="vbtns"><button class="vbtn" onclick="selectAll()">Select all</button><button class="vbtn" onclick="deselectAll()">Deselect all</button></div>
+</div>
+<div class="term-grid" id="termGrid"></div>
+<div class="sel-count" id="selCount"></div>
+<div class="add-wrap">
+  <span class="add-lbl">Add your own terms (one per line)</span>
+  <textarea class="add-ta" id="addInput" placeholder="Add extra terms here..." oninput="updateSelCount()"></textarea>
+  <div class="add-hint">These will be included alongside the checked terms above.</div>
+</div>
+</div>
+
+<div class="panel">
+<div class="step-hdr"><div class="step-n">3</div><div class="step-lbl">Card settings</div></div>
+<span class="sec-lbl">Language columns to include</span>
+<div class="tog-row c3">
+  <button class="tog active" id="lang-bilingual" onclick="setLang('bilingual')"><span class="t">Bilingual</span><span class="d">English + Spanish columns</span></button>
+  <button class="tog" id="lang-english" onclick="setLang('english')"><span class="t">English only</span><span class="d">No Spanish column</span></button>
+  <button class="tog" id="lang-spanish" onclick="setLang('spanish')"><span class="t">Spanish only</span><span class="d">Spanish column only</span></button>
+</div>
 <span class="sec-lbl">Card set mode</span>
-<div class="ogrid c3" id="bc-modeGrid"><div class="gopt active" data-val="study"><span class="gi">📚</span><span class="gt">Study cards</span><span class="gd">One card per term</span></div><div class="gopt" data-val="qa-pairs"><span class="gi">🔀</span><span class="gt">Q&amp;A pairs</span><span class="gd">Two cards per term</span></div><div class="gopt" data-val="both"><span class="gi">📦</span><span class="gt">Both sets</span><span class="gd">Study + Q&amp;A in one CSV</span></div></div>
-<div id="bc-qaInfo" style="display:none;"><div class="info-box"><strong>Q&amp;A pairs:</strong> Each term produces a Question card (definition as a question) and an Answer card (term + image). Use two Canva templates and filter the CSV by <code>card_type</code> column. See the Teacher Guide tab for the full workflow.</div></div></div>
+<div class="ogrid c3">
+  <div class="gopt active" id="mode-study" onclick="setMode('study')"><span class="gi">&#128218;</span><span class="gt">Study cards</span><span class="gd">One card per term</span></div>
+  <div class="gopt" id="mode-qa" onclick="setMode('qa')"><span class="gi">&#128256;</span><span class="gt">Q&amp;A pairs</span><span class="gd">Two cards per term</span></div>
+  <div class="gopt" id="mode-both" onclick="setMode('both')"><span class="gi">&#128218;</span><span class="gt">Both sets</span><span class="gd">Study cards + Q&amp;A pairs</span></div>
+</div>
+<div id="qaNote" style="display:none;">
+  <div class="info-box"><strong>Q&amp;A pairs:</strong> Each term produces a Question card row and an Answer card row. You will fill in the <code>question</code> column in Excel or Google Sheets before uploading to Canva. Use two Canva templates - one for question cards, one for answer cards - and filter by the <code>card_type</code> column. See the Teacher Guide tab for full instructions.</div>
+</div>
+<div class="info-box" style="margin-top:8px;"><strong>How CSV completion works:</strong> This tool fills in the term names, subject, course, and card type automatically. You will open the downloaded CSV in Excel or Google Sheets to fill in the <code>definition</code> and <code>term_es</code> (Spanish) columns before uploading to Canva. The Teacher Guide tab shows you exactly how to do this step.</div>
+</div>
 
-<div class="prog-wrap" id="bc-progWrap"><div class="prog-lbl"><div class="spinner"></div><span id="bc-progLbl">Generating...</span></div><div class="prog-bar"><div class="prog-fill" id="bc-progFill" style="width:0%"></div></div></div>
-<button class="gen-btn" id="bc-genBtn" onclick="bc_generate()"><span>⬇</span> Generate Study Card CSV</button>
-<div class="prev-sec" id="bc-prevSec"><div class="tbl-panel"><div class="tbl-hdr"><div><div class="tbl-title">Review &amp; edit card data</div><div class="tbl-meta" id="bc-tblMeta"></div></div><div class="tbl-actions"><button class="act-btn teal" onclick="bc_generate()">Regenerate</button><button class="act-btn green" id="bc-dlBtn" onclick="bc_downloadCSV()">⬇ Download CSV</button></div></div><div class="tbl-wrap"><table class="data-tbl"><thead id="bc-tblHead"></thead><tbody id="bc-tblBody"></tbody></table></div></div></div>
-<div class="out-sec" id="bc-outSec"><div class="out-panel"><div class="out-title">CSV ready — use it in Canva Bulk Create</div><div class="out-sub" id="bc-outSub"></div><div class="col-key" id="bc-colKey"></div><div class="info-box"><strong>About image_prompt:</strong> Each row has a precise anatomical illustration description. After Bulk Create generates cards, open each card and paste <code>image_prompt</code> into Canva's AI image generator. See the <strong>Teacher Guide</strong> tab for the full step-by-step.</div><div class="how-to"><div class="how-to-title">Quick steps — Canva Bulk Create</div><ol id="bc-howToList"></ol></div></div></div>
-</div></div>
+<button class="gen-btn" onclick="generateCSV()">&#11015; Build CSV for Canva Bulk Create</button>
+
+<div class="prev-sec" id="prevSec">
+<div class="tbl-panel">
+  <div class="tbl-hdr">
+    <div>
+      <div class="tbl-title">Preview and edit your card data</div>
+      <div class="tbl-meta" id="tblMeta"></div>
+    </div>
+    <div class="tbl-actions">
+      <button class="act-btn teal" onclick="generateCSV()">Rebuild</button>
+      <button class="act-btn green" id="dlBtn" onclick="downloadCSV()">&#11015; Download CSV</button>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table class="data-tbl">
+      <thead id="tblHead"></thead>
+      <tbody id="tblBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div style="margin-top:16px;">
+<div class="dl-banner">
+  <div>
+    <div class="dl-title">CSV ready to download</div>
+    <div class="dl-sub" id="dlSub"></div>
+  </div>
+  <button class="act-btn green" onclick="downloadCSV()">&#11015; Download CSV file</button>
+</div>
+
+<div class="col-key" id="colKey"></div>
+
+<div style="background:var(--teal-pale);border:1px solid var(--teal-bg);border-radius:var(--rm);padding:14px 18px;">
+  <div style="font-size:13px;font-weight:600;color:var(--teal);margin-bottom:8px;">Next steps after downloading</div>
+  <ol style="padding-left:18px;" id="nextStepsList"></ol>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
 <!-- TEACHER GUIDE PAGE -->
 <div id="page-guide" class="page">
-<div class="guide-hdr"><div class="guide-hdr-in"><div class="guide-eye">Teacher Guide</div><h2 style="font-family:'Lora',serif;font-size:24px;color:#fff;margin-bottom:6px;">Canva Bulk Create for Health Science Study Cards</h2><p style="font-size:13px;color:rgba(255,255,255,.72);max-width:500px;line-height:1.6;">Step-by-step instructions from CSV download to printed cards in your classroom — no prior Canva Bulk Create experience needed.</p></div></div>
+<div class="guide-hdr"><div class="guide-hdr-in">
+  <div class="guide-eye">Teacher Guide</div>
+  <h2>Canva Bulk Create for Health Science Study Cards</h2>
+  <p>Step-by-step instructions from CSV download to printed cards in your classroom. No prior experience with Canva Bulk Create needed.</p>
+</div></div>
 <div class="guide-main">
-<div class="print-bar"><span class="print-msg">Keep this open alongside the CSV Builder — or print it for your department.</span><button class="print-btn" onclick="window.print()">🖨 Print this guide</button></div>
-<div class="toc"><div class="toc-title">What's in this guide</div><div class="toc-grid"><div class="toc-item" onclick="scrollGs('gs1')"><span class="toc-num">1</span> What is Canva Bulk Create?</div><div class="toc-item" onclick="scrollGs('gs2')"><span class="toc-num">2</span> Understanding your CSV file</div><div class="toc-item" onclick="scrollGs('gs3')"><span class="toc-num">3</span> Build your Canva template</div><div class="toc-item" onclick="scrollGs('gs4')"><span class="toc-num">4</span> Study cards walkthrough</div><div class="toc-item" onclick="scrollGs('gs5')"><span class="toc-num">5</span> Adding AI illustrations</div><div class="toc-item" onclick="scrollGs('gs6')"><span class="toc-num">6</span> Q&amp;A pairs walkthrough</div><div class="toc-item" onclick="scrollGs('gs7')"><span class="toc-num">7</span> Printing &amp; sharing</div><div class="toc-item" onclick="scrollGs('gs8')"><span class="toc-num">8</span> Troubleshooting &amp; FAQ</div></div></div>
-
-<div class="gsec" id="gs1"><div class="gsec-hdr"><div class="gsec-num">1</div><div><div class="gsec-title">What is Canva Bulk Create?</div><div class="gsec-sub">The fastest way to make a full matching card set</div></div></div>
-<p class="gp">Canva Bulk Create lets you <strong>design one card template once</strong>, then automatically generate hundreds of cards from a spreadsheet — each with its own vocabulary term, definition, Spanish translation, and image prompt already filled in. Without it, making 20 study cards means duplicating a design 20 times and typing each term by hand.</p>
-<div class="gcall tip"><span class="gcall-icon">🎓</span><div class="gcall-body"><div class="gcall-title">Canva for Education is free for teachers</div><div class="gcall-text">Sign up at <strong>canva.com/education</strong> — completely free for K–12 teachers. Unlocks Bulk Create, AI image generation, and all Pro features.</div></div></div></div>
-
-<div class="gsec" id="gs2"><div class="gsec-hdr"><div class="gsec-num">2</div><div><div class="gsec-title">Understanding your CSV file</div><div class="gsec-sub">What each column contains and how it's used</div></div></div>
-<p class="gp">The CSV you download is a spreadsheet where <strong>each row = one card</strong>. Open it in Excel or Google Sheets to preview it before uploading to Canva.</p>
-<table class="col-tbl"><thead><tr><th>Column</th><th>What it contains</th><th>Used for</th></tr></thead><tbody>
-<tr><td>card_type</td><td>study_card, question_card, or answer_card</td><td><span class="cbadge ref">Filtering</span></td></tr>
-<tr><td>term_en</td><td>English vocabulary term (e.g., Femur)</td><td><span class="cbadge front">Card front</span></td></tr>
-<tr><td>term_es</td><td>Spanish medical translation — bilingual mode only</td><td><span class="cbadge front">Card front</span></td></tr>
-<tr><td>definition</td><td>Grade-level definition of the term</td><td><span class="cbadge front">Card front</span></td></tr>
-<tr><td>question</td><td>Exam-style question — Q&amp;A mode only</td><td><span class="cbadge qa">Question card</span></td></tr>
-<tr><td>image_prompt</td><td>Paste into Canva AI image generator for front illustration</td><td><span class="cbadge front">Card front</span></td></tr>
-<tr><td>best_view</td><td>Anatomical view used (Anterior, Cross-section, etc.)</td><td><span class="cbadge ref">Reference</span></td></tr>
-<tr><td>back_image_prompt</td><td>Description for the card back illustration</td><td><span class="cbadge back">Card back</span></td></tr>
-<tr><td>subject</td><td>Body system label (e.g., Skeletal System)</td><td><span class="cbadge front">Card front</span></td></tr>
-<tr><td>course</td><td>Course name (e.g., Health Science I)</td><td><span class="cbadge front">Card front</span></td></tr>
-</tbody></table></div>
-
-<div class="gsec" id="gs3"><div class="gsec-hdr"><div class="gsec-num">3</div><div><div class="gsec-title">Build your Canva template</div><div class="gsec-sub">Design it once — Bulk Create fills in the rest</div></div></div>
-<p class="gp">Your template is the master design every card follows. The key is adding <strong>text placeholders</strong> — text boxes with column names in double curly braces that Canva replaces with your real data.</p>
-<div class="gsteps">
-<div class="gstep"><div class="gstep-n">1</div><div class="gstep-body"><div class="gstep-title">Create a new design in Canva</div><div class="gstep-desc">Go to canva.com → <strong>Create a design</strong> → <strong>Custom size</strong>. For a 5×3 inch flashcard, enter 5 inches wide × 3 inches tall. Click <strong>Create new design</strong>.</div></div></div>
-<div class="gstep"><div class="gstep-n">2</div><div class="gstep-body"><div class="gstep-title">Design your card front layout</div><div class="gstep-desc">Add text boxes, shapes, and image frames. Style everything — font, size, color, spacing — exactly how you want all cards to look. This is the only time you need to worry about design.</div></div></div>
-<div class="gstep"><div class="gstep-n">3</div><div class="gstep-body"><div class="gstep-title">Add text placeholders — the critical step</div><div class="gstep-desc">Click any text box that should pull CSV data. Type the column name in double curly braces: <code>{{term_en}}</code> <code>{{term_es}}</code> <code>{{definition}}</code> <code>{{subject}}</code>. <strong>Spelling must match your CSV column headers exactly — lowercase, underscores, no spaces inside braces.</strong></div><div class="gstep-note"><span>⚠️</span> Common mistake: <code>{{Term_EN}}</code> or <code>{{ term_en }}</code> (wrong capitalization or spaces). Canva is case-sensitive.</div></div></div>
-<div class="gstep"><div class="gstep-n">4</div><div class="gstep-body"><div class="gstep-title">Add page 2 for the card back</div><div class="gstep-desc">Click <strong>+</strong> below your first page to add page 2. Design the card back — add a large image frame for the illustration. If using image + term, add <code>{{term_en}}</code> at the bottom.</div></div></div>
-<div class="gstep"><div class="gstep-n">5</div><div class="gstep-body"><div class="gstep-title">Save your template</div><div class="gstep-desc">Canva saves automatically. Name it clearly — e.g., "Health Science Flashcard Template — Skeletal System." Reuse it for other body systems with a new CSV.</div></div></div>
-</div></div>
-
-<div class="gsec" id="gs4"><div class="gsec-hdr"><div class="gsec-num">4</div><div><div class="gsec-title">Study cards: full walkthrough</div></div></div>
-<div class="gsteps">
-<div class="gstep"><div class="gstep-n">1</div><div class="gstep-body"><div class="gstep-title">Open your template in Canva</div><div class="gstep-desc">Go to your Home page → find your flashcard template → click to open it in the editor.</div></div></div>
-<div class="gstep"><div class="gstep-n">2</div><div class="gstep-body"><div class="gstep-title">Open Bulk Create from the Apps panel</div><div class="gstep-desc">In the left sidebar, click <strong>Apps</strong> → search for <strong>Bulk Create</strong> → click to open it.</div><div class="gstep-note"><span>🔍</span> Can't find it? Try searching "bulk" in the Apps search bar. Requires Canva for Education or Pro.</div></div></div>
-<div class="gstep"><div class="gstep-n">3</div><div class="gstep-body"><div class="gstep-title">Upload your CSV file</div><div class="gstep-desc">In Bulk Create → <strong>Upload data</strong> → <strong>Upload CSV</strong> → select your downloaded file. Canva shows a preview of the columns. Verify they appear correctly.</div></div></div>
-<div class="gstep"><div class="gstep-n">4</div><div class="gstep-body"><div class="gstep-title">Connect columns to placeholders and generate</div><div class="gstep-desc">Canva tries to auto-match columns to placeholders. Check each connection. Click <strong>Continue</strong> → <strong>Generate designs</strong>. For 20 terms you get 20 two-page card designs in about 10–30 seconds.</div></div></div>
+<div class="print-bar">
+  <span class="print-msg">Keep this open alongside the CSV Builder, or print it for your department.</span>
+  <button class="print-btn" onclick="window.print()">&#128424; Print this guide</button>
 </div>
-<div class="gcall ok" style="margin-top:12px;"><span class="gcall-icon">🎉</span><div class="gcall-body"><div class="gcall-title">You just saved hours of work</div><div class="gcall-text">What used to take 45+ minutes of manual card creation now takes under 5 minutes from start to a complete generated set.</div></div></div></div>
+<div class="toc">
+  <div class="toc-title">What is in this guide</div>
+  <div class="toc-grid">
+    <div class="toc-item" onclick="scrollGs('gs1')"><span class="toc-num">1</span> What is Canva Bulk Create?</div>
+    <div class="toc-item" onclick="scrollGs('gs2')"><span class="toc-num">2</span> Understanding your CSV columns</div>
+    <div class="toc-item" onclick="scrollGs('gs3')"><span class="toc-num">3</span> Completing definitions in Excel or Sheets</div>
+    <div class="toc-item" onclick="scrollGs('gs4')"><span class="toc-num">4</span> Build your Canva template</div>
+    <div class="toc-item" onclick="scrollGs('gs5')"><span class="toc-num">5</span> Run Bulk Create and generate cards</div>
+    <div class="toc-item" onclick="scrollGs('gs6')"><span class="toc-num">6</span> Q&amp;A pairs walkthrough</div>
+    <div class="toc-item" onclick="scrollGs('gs7')"><span class="toc-num">7</span> Printing and sharing</div>
+    <div class="toc-item" onclick="scrollGs('gs8')"><span class="toc-num">8</span> Troubleshooting and FAQ</div>
+  </div>
+</div>
 
-<div class="gsec" id="gs5"><div class="gsec-hdr"><div class="gsec-num">5</div><div><div class="gsec-title">Adding AI illustrations</div><div class="gsec-sub">Using the image_prompt column with Canva AI Image</div></div></div>
-<div class="gcall warn"><span class="gcall-icon">⚠️</span><div class="gcall-body"><div class="gcall-title">Bulk Create does not auto-generate images</div><div class="gcall-text">Canva's Bulk Create only fills <strong>text</strong> placeholders — not images. You'll add AI illustrations card by card after generating. For 15–20 cards this takes about 10–15 minutes.</div></div></div>
+<div class="gsec" id="gs1">
+<div class="gsec-hdr"><div class="gsec-num">1</div><div><div class="gsec-title">What is Canva Bulk Create?</div><div class="gsec-sub">The fastest way to make a full matching card set</div></div></div>
+<p class="gp">Canva Bulk Create lets you design one card template once, then automatically generate hundreds of cards from a spreadsheet. Each card gets its own vocabulary term, definition, and Spanish translation already filled in. Without Bulk Create, making 20 study cards means duplicating a design 20 times and typing each term by hand.</p>
+<div class="gcall tip"><span class="gcall-icon">&#127891;</span><div class="gcall-body"><div class="gcall-title">Canva for Education is free for teachers</div><div class="gcall-text">Sign up at <strong>canva.com/education</strong> - completely free for K-12 teachers. Unlocks Bulk Create and all Pro features including AI image generation.</div></div></div>
+</div>
+
+<div class="gsec" id="gs2">
+<div class="gsec-hdr"><div class="gsec-num">2</div><div><div class="gsec-title">Understanding your CSV columns</div><div class="gsec-sub">What is filled in automatically vs what you complete yourself</div></div></div>
+<p class="gp">When you download the CSV from the builder, open it in Excel or Google Sheets. Each row is one card. Here is what every column contains:</p>
+<table class="col-tbl">
+<thead><tr><th>Column</th><th>What it contains</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>card_type</td><td>study_card, question_card, or answer_card - use to filter in Canva</td><td><span class="cbadge auto">Auto-filled</span></td></tr>
+<tr><td>term_en</td><td>The English vocabulary term - maps to {{term_en}} in your template</td><td><span class="cbadge auto">Auto-filled</span></td></tr>
+<tr><td>term_es</td><td>Spanish medical translation - YOU fill this in using Google Translate or a medical dictionary</td><td><span class="cbadge manual">You fill in</span></td></tr>
+<tr><td>definition</td><td>Grade-level definition of the term - YOU write or paste this in</td><td><span class="cbadge manual">You fill in</span></td></tr>
+<tr><td>question</td><td>Exam-style question for Q&amp;A pairs - YOU write this in (e.g. What is the longest bone?)</td><td><span class="cbadge manual">You fill in</span></td></tr>
+<tr><td>subject</td><td>Body system label - maps to {{subject}} in your template</td><td><span class="cbadge auto">Auto-filled</span></td></tr>
+<tr><td>course</td><td>Course name - maps to {{course}} in your template</td><td><span class="cbadge auto">Auto-filled</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="gsec" id="gs3">
+<div class="gsec-hdr"><div class="gsec-num">3</div><div><div class="gsec-title">Completing definitions in Excel or Google Sheets</div><div class="gsec-sub">The most important step before uploading to Canva</div></div></div>
+<p class="gp">After downloading your CSV, open it in Google Sheets or Excel. You will see your terms already listed with placeholder text in the definition and Spanish columns. Your job is to fill those in before uploading to Canva.</p>
 <div class="gsteps">
-<div class="gstep"><div class="gstep-n">1</div><div class="gstep-body"><div class="gstep-title">Find the image prompt for each card</div><div class="gstep-desc">Keep your CSV open in Excel or Google Sheets. Find the row for the term on the card you're working on. Copy the text in the <code>image_prompt</code> column.</div></div></div>
-<div class="gstep"><div class="gstep-n">2</div><div class="gstep-body"><div class="gstep-title">Click the image placeholder in Canva → Generate image</div><div class="gstep-desc">Click the empty image frame. In the toolbar, look for <strong>AI image</strong> or <strong>Generate image</strong>. Click it, paste your <code>image_prompt</code> text, and click <strong>Generate</strong>. Choose the most accurate result.</div></div></div>
-<div class="gstep"><div class="gstep-n">3</div><div class="gstep-body"><div class="gstep-title">Add the card back illustration</div><div class="gstep-desc">Switch to page 2 of that card. Click the image placeholder, open AI image, paste the <code>back_image_prompt</code> from the same row. Repeat for each card.</div></div></div>
-</div></div>
+<div class="gstep"><div class="gstep-n">1</div><div class="gstep-body"><div class="gstep-title">Open the CSV in Google Sheets</div><div class="gstep-desc">Go to sheets.google.com, click New, then File - Import - Upload and select your downloaded CSV file. Choose comma as the separator. Your terms will appear in rows with empty definition and term_es columns.</div></div></div>
+<div class="gstep"><div class="gstep-n">2</div><div class="gstep-body"><div class="gstep-title">Fill in definitions</div><div class="gstep-desc">Click the definition cell for the first term and type or paste a grade-appropriate definition. For Health Science I, aim for one clear sentence. For A&P, one to two sentences. For Nurse Aide, keep it clinical and concise. Work down the column one row at a time.</div><div class="gstep-note"><span>&#128161;</span> Tip: Use your textbook glossary, Merriam-Webster Medical Dictionary, or MedlinePlus for reliable definitions. Copy and edit them to match your students' reading level.</div></div></div>
+<div class="gstep"><div class="gstep-n">3</div><div class="gstep-body"><div class="gstep-title">Fill in Spanish translations (bilingual mode)</div><div class="gstep-desc">In the term_es column, type the Spanish medical translation for each term. Google Translate works well for most medical terms - type the English term and switch to Spanish. For terms where accuracy matters most (like medication names or procedures), verify with a medical Spanish reference.</div><div class="gstep-note"><span>&#9888;&#65039;</span> Always have a bilingual colleague or your ESL teacher review Spanish translations before printing a full class set.</div></div></div>
+<div class="gstep"><div class="gstep-n">4</div><div class="gstep-body"><div class="gstep-title">Save as CSV before uploading to Canva</div><div class="gstep-desc">Once definitions and Spanish terms are filled in, go to File - Download - Comma Separated Values (.csv). Save this completed file. This is the file you will upload to Canva Bulk Create - not the original downloaded file.</div></div></div>
+</div>
+<div class="gcall ok"><span class="gcall-icon">&#127881;</span><div class="gcall-body"><div class="gcall-title">Time-saving tip for large sets</div><div class="gcall-text">Use one set of definitions across multiple classes or years. Once you fill in the Skeletal System definitions the first time, save that completed CSV and reuse it next year - just update Canva Bulk Create with the same file.</div></div></div>
+</div>
 
-<div class="gsec" id="gs6"><div class="gsec-hdr"><div class="gsec-num">6</div><div><div class="gsec-title">Q&amp;A pairs: full walkthrough</div><div class="gsec-sub">Creating a physical matching card set for stations and partner work</div></div></div>
-<p class="gp">Q&amp;A pairs produce two cards per term — a <strong>question card</strong> (showing an exam question) and an <strong>answer card</strong> (showing the term and image). Students spread both sets on a desk and physically match them.</p>
-<div class="gcall info"><span class="gcall-icon">📋</span><div class="gcall-body"><div class="gcall-title">Q&amp;A pairs require two templates and two CSV uploads</div><div class="gcall-text">Create <strong>two Canva templates</strong> — one for question cards, one for answer cards. Run Bulk Create twice: once filtered to <code>question_card</code> rows, once to <code>answer_card</code> rows. Use the <code>card_type</code> column to filter.</div></div></div>
+<div class="gsec" id="gs4">
+<div class="gsec-hdr"><div class="gsec-num">4</div><div><div class="gsec-title">Build your Canva template</div><div class="gsec-sub">Design it once - Bulk Create fills in the rest</div></div></div>
+<p class="gp">Your template is the master design that every generated card follows. You only build this once per card style. The key is adding text placeholders - special text boxes with column names in double curly braces that Canva replaces with your real data.</p>
 <div class="gsteps">
-<div class="gstep"><div class="gstep-n">1</div><div class="gstep-body"><div class="gstep-title">Filter your CSV for question cards</div><div class="gstep-desc">Open your CSV in Google Sheets or Excel. Filter the <code>card_type</code> column to show only <code>question_card</code> rows. Save as a separate file (e.g., <em>skeletal-questions.csv</em>).</div></div></div>
-<div class="gstep"><div class="gstep-n">2</div><div class="gstep-body"><div class="gstep-title">Build a question card template with <code>{{question}}</code></div><div class="gstep-desc">Create a Canva design with <code>{{question}}</code> as the main text in large, readable font, and <code>{{subject}}</code> as a smaller label. Use a distinctive color so question cards look different from answer cards.</div></div></div>
-<div class="gstep"><div class="gstep-n">3</div><div class="gstep-body"><div class="gstep-title">Run Bulk Create → repeat for answer cards</div><div class="gstep-desc">Open your question template → Apps → Bulk Create → upload the filtered question CSV → connect columns → Generate. Then filter the original CSV to <code>answer_card</code> rows, build an answer card template with <code>{{term_en}}</code> and an image frame, and repeat.</div></div></div>
-</div></div>
+<div class="gstep"><div class="gstep-n">1</div><div class="gstep-body"><div class="gstep-title">Create a new design in Canva</div><div class="gstep-desc">Go to canva.com, click Create a design, then Custom size. For a standard 5 x 3 inch flashcard enter 5 inches wide by 3 inches tall. Click Create new design.</div></div></div>
+<div class="gstep"><div class="gstep-n">2</div><div class="gstep-body"><div class="gstep-title">Design your card front layout</div><div class="gstep-desc">Add text boxes, shapes, and image frames. Style everything - font, size, color, spacing - exactly how you want all cards to look. This is the only time you need to worry about design.</div></div></div>
+<div class="gstep"><div class="gstep-n">3</div><div class="gstep-body"><div class="gstep-title">Add text placeholders - the critical step</div><div class="gstep-desc">Click any text box that should pull data from your CSV. Type the column name in double curly braces exactly as shown: <code>{{term_en}}</code> for the vocabulary term, <code>{{term_es}}</code> for Spanish, <code>{{definition}}</code> for the definition, <code>{{subject}}</code> for the body system label. Spelling must match your CSV column headers exactly - lowercase with underscores, no spaces inside the braces.</div><div class="gstep-note"><span>&#9888;&#65039;</span> Common mistake: typing {{Term_EN}} or {{ term_en }} with wrong capitalization or extra spaces. Canva is case-sensitive.</div></div></div>
+<div class="gstep"><div class="gstep-n">4</div><div class="gstep-body"><div class="gstep-title">Add a second page for the card back</div><div class="gstep-desc">Click the plus button below your first page to add page 2. Design the card back - add a large image frame for the illustration, or add <code>{{definition}}</code> if you want the definition on the back instead of the front.</div></div></div>
+<div class="gstep"><div class="gstep-n">5</div><div class="gstep-body"><div class="gstep-title">Name and save your template</div><div class="gstep-desc">Canva saves automatically. Give your design a clear name like Health Science Flashcard Template - Skeletal System. You can reuse it for other body systems with a new CSV file - no redesign needed.</div></div></div>
+</div>
+</div>
 
-<div class="gsec" id="gs7"><div class="gsec-hdr"><div class="gsec-num">7</div><div><div class="gsec-title">Printing &amp; sharing</div></div></div>
+<div class="gsec" id="gs5">
+<div class="gsec-hdr"><div class="gsec-num">5</div><div><div class="gsec-title">Run Bulk Create and generate cards</div><div class="gsec-sub">From completed CSV to a full card set in under a minute</div></div></div>
 <div class="gsteps">
-<div class="gstep"><div class="gstep-n">1</div><div class="gstep-body"><div class="gstep-title">Export as PDF for printing</div><div class="gstep-desc">Click <strong>Share → Download → PDF Print</strong>. For double-sided cards, use <strong>flip on short edge</strong> for landscape cards, or <strong>flip on long edge</strong> for portrait. Always print one test sheet first before running the full set.</div><div class="gstep-note"><span>🖨</span> Print on 65lb card stock or heavier for durability.</div></div></div>
-<div class="gstep"><div class="gstep-n">2</div><div class="gstep-body"><div class="gstep-title">Share digitally</div><div class="gstep-desc">Click <strong>Share → Share link → Anyone with the link can view</strong>. Students open in any browser — no Canva account needed. You can also share the PDF through Google Classroom or your school's LMS.</div></div></div>
-<div class="gstep"><div class="gstep-n">3</div><div class="gstep-body"><div class="gstep-title">Reuse your template next unit</div><div class="gstep-desc">Your Canva template stays saved. Next unit, run the CSV builder for the new body system, download a fresh CSV, and run Bulk Create on the same template. Takes about 5 minutes once you've done it once.</div></div></div>
-</div></div>
+<div class="gstep"><div class="gstep-n">1</div><div class="gstep-body"><div class="gstep-title">Open your template in Canva</div><div class="gstep-desc">Go to your Canva Home page, find your flashcard template, and click to open it in the editor.</div></div></div>
+<div class="gstep"><div class="gstep-n">2</div><div class="gstep-body"><div class="gstep-title">Open Bulk Create from the Apps panel</div><div class="gstep-desc">In the left sidebar, click Apps - then search for Bulk Create and click to open it. If you do not see it, make sure you are on a Canva for Education or Pro account.</div></div></div>
+<div class="gstep"><div class="gstep-n">3</div><div class="gstep-body"><div class="gstep-title">Upload your completed CSV</div><div class="gstep-desc">In Bulk Create, click Upload data then Upload CSV. Select the completed CSV file (the one where you filled in definitions and Spanish translations in Google Sheets). Canva shows a preview of the columns - verify they look correct.</div></div></div>
+<div class="gstep"><div class="gstep-n">4</div><div class="gstep-body"><div class="gstep-title">Connect columns to placeholders and generate</div><div class="gstep-desc">Canva tries to auto-match your CSV columns to the placeholders in your template. Check that each placeholder is connected to the correct column. Click Continue, then Generate designs. Canva builds one card per row in about 10-30 seconds.</div></div></div>
+</div>
+<div class="gcall ok"><span class="gcall-icon">&#127881;</span><div class="gcall-body"><div class="gcall-title">You just saved hours of work</div><div class="gcall-text">What used to take 45 minutes of manual card creation now takes under 5 minutes once your CSV is complete.</div></div></div>
+</div>
 
-<div class="gsec" id="gs8"><div class="gsec-hdr"><div class="gsec-num">8</div><div><div class="gsec-title">Troubleshooting &amp; FAQ</div></div></div>
+<div class="gsec" id="gs6">
+<div class="gsec-hdr"><div class="gsec-num">6</div><div><div class="gsec-title">Q&amp;A pairs walkthrough</div><div class="gsec-sub">Creating physical matching cards for stations and partner work</div></div></div>
+<p class="gp">Q&amp;A pairs produce two cards per term - a question card (showing an exam question) and an answer card (showing the term). Students spread both sets on a desk and physically match them. This is excellent for stations, partner review, and sorting activities.</p>
+<div class="gcall info"><span class="gcall-icon">&#128203;</span><div class="gcall-body"><div class="gcall-title">Q&amp;A pairs require two templates and two CSV uploads</div><div class="gcall-text">Create two Canva templates - one for question cards with <code>{{question}}</code> as the main text, one for answer cards with <code>{{term_en}}</code>. Run Bulk Create twice: once filtered to <code>question_card</code> rows, once to <code>answer_card</code> rows. Filter by the <code>card_type</code> column in Google Sheets.</div></div></div>
+<div class="gsteps">
+<div class="gstep"><div class="gstep-n">1</div><div class="gstep-body"><div class="gstep-title">Fill in the question column in Google Sheets</div><div class="gstep-desc">Open your CSV in Google Sheets. In the question column, write an exam-style question for each term - for example, What is the longest bone in the human body? or Which structure produces red blood cells? Keep questions concise so they fit on a card.</div></div></div>
+<div class="gstep"><div class="gstep-n">2</div><div class="gstep-body"><div class="gstep-title">Filter to question_card rows and save a separate file</div><div class="gstep-desc">In Google Sheets, click the card_type column header, go to Data - Create a filter, then filter to show only question_card rows. Select all visible rows, copy, and paste into a new sheet. Download that as a CSV named something like skeletal-questions.csv.</div></div></div>
+<div class="gstep"><div class="gstep-n">3</div><div class="gstep-body"><div class="gstep-title">Run Bulk Create for question cards, then answer cards</div><div class="gstep-desc">Build a question card template with <code>{{question}}</code> as the main text and <code>{{subject}}</code> as a label. Run Bulk Create with the questions CSV. Then filter to answer_card rows, build an answer card template with <code>{{term_en}}</code> and <code>{{term_es}}</code>, and run Bulk Create again.</div></div></div>
+</div>
+</div>
+
+<div class="gsec" id="gs7">
+<div class="gsec-hdr"><div class="gsec-num">7</div><div><div class="gsec-title">Printing and sharing</div></div></div>
+<div class="gsteps">
+<div class="gstep"><div class="gstep-n">1</div><div class="gstep-body"><div class="gstep-title">Export as PDF for printing</div><div class="gstep-desc">Click Share - Download - PDF Print for the highest quality. For double-sided cards, use flip on short edge for landscape cards, or flip on long edge for portrait cards. Always print one test sheet before the full set. Print on 65lb card stock or heavier for durability.</div></div></div>
+<div class="gstep"><div class="gstep-n">2</div><div class="gstep-body"><div class="gstep-title">Share digitally with students</div><div class="gstep-desc">Click Share - Share link - Anyone with the link can view. Students open the link in any browser without needing a Canva account. You can also share the PDF through Google Classroom or your school LMS.</div></div></div>
+<div class="gstep"><div class="gstep-n">3</div><div class="gstep-body"><div class="gstep-title">Reuse your template next unit</div><div class="gstep-desc">Your Canva template stays saved. Next unit, come back to the CSV Builder, select the new body system, download a new CSV, fill in definitions, and run Bulk Create on the same template. The whole process takes about 10 minutes once you have done it once.</div></div></div>
+</div>
+</div>
+
+<div class="gsec" id="gs8">
+<div class="gsec-hdr"><div class="gsec-num">8</div><div><div class="gsec-title">Troubleshooting and FAQ</div></div></div>
 <div class="faq">
-<div class="faq-item"><div class="faq-q" onclick="this.closest('.faq-item').classList.toggle('open')">My placeholders show as {{term_en}} in the final cards — they're not being replaced</div><div class="faq-a">Almost always a spelling or format mismatch. Check: (1) CSV column header spelled exactly like your placeholder — <code>term_en</code> not <code>Term_EN</code>. (2) Double curly braces — <code>{{term_en}}</code> not <code>{term_en}</code>. (3) No spaces inside braces — <code>{{ term_en }}</code> will not work. Canva is case-sensitive.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="this.closest('.faq-item').classList.toggle('open')">Bulk Create isn't showing up in my Apps panel</div><div class="faq-a">Bulk Create requires <strong>Canva for Education, Pro, or Teams</strong>. Sign up for Canva for Education at canva.com/education — it's completely free for verified K–12 teachers.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="this.closest('.faq-item').classList.toggle('open')">The AI-generated illustrations don't look anatomically accurate</div><div class="faq-a">Try generating 2–3 times — results vary. Add style words at the end: <em>"medical textbook illustration, clean white background."</em> For specific structures, a more detailed prompt with additional anatomical terms produces better results.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="this.closest('.faq-item').classList.toggle('open')">How do I filter my CSV to just question_card or answer_card rows?</div><div class="faq-a">In <strong>Google Sheets</strong>: Click the <code>card_type</code> column header → Data → Create a filter → click the filter dropdown → uncheck everything except the type you want. Select all visible rows → copy → paste into a new Sheet → download as CSV. Same process in Excel with Data → Filter.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="this.closest('.faq-item').classList.toggle('open')">The definition text overflows the text box</div><div class="faq-a">Options: (1) Turn on <strong>Auto-resize text</strong> on the definition text box (click text box → Resize &amp; position → Auto-fit). (2) Edit shorter definitions directly in your CSV. (3) Use a larger card size like 4×6 inches.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="this.closest('.faq-item').classList.toggle('open')">My double-sided cards aren't aligning when I print</div><div class="faq-a">Make sure both pages are exactly the same size. Try switching between <strong>flip on short edge</strong> and <strong>flip on long edge</strong> in your printer settings. Always print one test sheet first. Some teachers prefer printing fronts and backs separately and gluing them back-to-back.</div></div>
-<div class="faq-item"><div class="faq-q" onclick="this.closest('.faq-item').classList.toggle('open')">Can I share the template with other teachers in my department?</div><div class="faq-a">Yes — in Canva, click <strong>Share → Copy link → Can use as template</strong>. Other teachers with the link can open the template in their own Canva account and run their own Bulk Create sessions with their own CSV files.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="this.closest('.faq-item').classList.toggle('open')">My placeholders show as {{term_en}} in the final cards and are not being replaced</div><div class="faq-a">Almost always a spelling or format mismatch. Check that your CSV column header is spelled exactly like your placeholder - <code>term_en</code> not <code>Term_EN</code>. Use double curly braces - <code>{{term_en}}</code> not <code>{term_en}</code>. No spaces inside the braces. Canva is case-sensitive.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="this.closest('.faq-item').classList.toggle('open')">Bulk Create is not showing up in my Apps panel</div><div class="faq-a">Bulk Create requires Canva for Education, Pro, or Teams. Sign up for Canva for Education at canva.com/education - it is completely free for verified K-12 teachers.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="this.closest('.faq-item').classList.toggle('open')">How do I open the CSV file in Google Sheets?</div><div class="faq-a">Go to sheets.google.com and click the plus button to create a new sheet. Then go to File - Import - Upload, and drag in your downloaded CSV file. When prompted, choose Comma as the separator type and click Import data. Your terms will appear in rows ready to edit.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="this.closest('.faq-item').classList.toggle('open')">How do I filter the CSV to just question_card or answer_card rows in Google Sheets?</div><div class="faq-a">Click the <code>card_type</code> column header. Go to Data - Create a filter. Click the filter dropdown that appears in the column header. Uncheck everything except the row type you want. Your view now shows only those rows. Select all visible rows, copy, paste into a new sheet, and download as CSV.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="this.closest('.faq-item').classList.toggle('open')">The definition text overflows the text box on the card</div><div class="faq-a">Turn on Auto-resize text on the definition text box in Canva - click the text box, then Resize and position, then turn on Auto-fit. Canva will shrink the font automatically. Alternatively, keep definitions to one sentence for Health Science I or use a larger card size like 4 x 6 inches.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="this.closest('.faq-item').classList.toggle('open')">My double-sided cards are not aligning when I print</div><div class="faq-a">Make sure both pages of your Canva design are exactly the same size. In your printer settings try switching between flip on short edge and flip on long edge to see which aligns correctly for your card orientation. Always print one test sheet first. Some teachers prefer printing fronts and backs separately and gluing them back-to-back to avoid alignment issues entirely.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="this.closest('.faq-item').classList.toggle('open')">Can I share my Canva template with other teachers in my department?</div><div class="faq-a">Yes. In Canva click Share - Copy link - Can use as template. Other teachers with the link can open the template in their own Canva account and run their own Bulk Create sessions with their own CSV files. Each teacher needs their own Canva for Education account.</div></div>
 </div>
-<p style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:10px;margin-top:16px;">Quick reference: key terms</p>
-<div class="gloss-grid">
-<div class="gloss-item"><div class="gloss-term">Bulk Create</div><div class="gloss-def">Canva feature that generates multiple card designs from a CSV spreadsheet automatically</div></div>
-<div class="gloss-item"><div class="gloss-term">CSV</div><div class="gloss-def">Comma-Separated Values — a plain spreadsheet file that Canva reads to fill in your card data</div></div>
-<div class="gloss-item"><div class="gloss-term">Placeholder</div><div class="gloss-def">A tag like {{term_en}} in your template that gets replaced with real data during Bulk Create</div></div>
-<div class="gloss-item"><div class="gloss-term">image_prompt</div><div class="gloss-def">The anatomical illustration description — paste into Canva's AI image generator for each card</div></div>
-<div class="gloss-item"><div class="gloss-term">card_type</div><div class="gloss-def">Column identifying a row as study_card, question_card, or answer_card — used to filter your CSV</div></div>
-<div class="gloss-item"><div class="gloss-term">Canva for Education</div><div class="gloss-def">Free professional Canva account for verified K–12 teachers — includes Bulk Create and AI image generation</div></div>
-</div></div>
 </div>
-<div class="footer"><div class="footer-text">Built for <strong>NC CTE Health Science teachers</strong> at Ashe County High School &amp; beyond · Aligned to NC DPI CTE standards</div></div>
-</div>
-<script>
-// ── NAVIGATION ──
-function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));document.getElementById('page-'+id).classList.add('active');const tabs={home:0,cc:1,bc:2,guide:3};document.querySelectorAll('.nav-tab')[tabs[id]].classList.add('active');window.scrollTo(0,0);}
-function scrollGs(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
 
-// ── VOCABULARY DATABASE ──
-const VOCAB={
-hs:{"Skeletal System":["Axial skeleton","Appendicular skeleton","Compact bone","Spongy bone","Periosteum","Medullary cavity","Hematopoiesis","Epiphysis","Diaphysis","Articular cartilage","Ligament","Tendon","Ossification","Red marrow","Osteoporosis","Fracture","Scoliosis","Osteoarthritis","Osteoblast","Osteoclast"],"Muscular System":["Skeletal muscle","Smooth muscle","Cardiac muscle","Tendon","Contractibility","Extensibility","Elasticity","Excitability","Atrophy","Hypertrophy","Origin","Insertion","Voluntary","Involuntary","Fascia","Muscular dystrophy","Strain","Hernia","Spasm","Tendonitis"],"Integumentary System":["Epidermis","Dermis","Hypodermis","Keratinocyte","Melanocyte","Sebaceous gland","Sudoriferous gland","Hair follicle","Nail matrix","Vitamin D synthesis","Acne","Dermatitis","Melanoma","Eczema","Alopecia","Pressure ulcer","First-degree burn","Second-degree burn","Third-degree burn","Wound healing"],"Digestive System":["Peristalsis","Bolus","Chyme","Enzyme","Villus","Liver","Gallbladder","Pancreas","Appendix","Colon","Esophagus","Stomach","Small intestine","Large intestine","Bile","Cholecystitis","GERD","Gastroenteritis","Hepatitis","Cholelithiasis"],"Urinary System":["Kidney","Nephron","Glomerulus","Filtration","Reabsorption","Ureter","Urethra","Bladder","Urine","Dialysis","UTI","Kidney stones","Renal failure","Electrolyte","Homeostasis"],"Nervous System":["Neuron","Axon","Dendrite","Synapse","Neurotransmitter","Central nervous system","Peripheral nervous system","Reflex","Meninges","Spinal cord","Cerebrum","Cerebellum","Brain stem","Multiple sclerosis","Epilepsy","Parkinson disease","Stroke","Concussion"],"Sensory System":["Cornea","Iris","Pupil","Retina","Optic nerve","Cochlea","Ossicles","Eardrum","Olfactory nerve","Taste buds","Mechanoreceptors","Photoreceptors","Rods and cones","Glaucoma","Cataracts","Hearing loss","Tinnitus","Nystagmus"],"Lymphatic & Immune System":["Lymph node","Lymphocyte","T-cell","B-cell","Antibody","Antigen","Immunity","Vaccine","Pathogen","Spleen","Thymus","Lymph","HIV/AIDS","Allergy","Autoimmune disease","Inflammation","Phagocytosis","Lymphoma"],"Endocrine System":["Hormone","Pituitary gland","Thyroid gland","Adrenal gland","Pancreas","Insulin","Glucagon","Feedback loop","Target organ","Diabetes mellitus","Hyperthyroidism","Hypothyroidism","Gigantism","Dwarfism","Goiter","Cortisol","Adrenaline","Homeostasis"],"Reproductive System":["Ovary","Uterus","Fallopian tube","Cervix","Testes","Sperm","Ovum","Fertilization","Menstrual cycle","Estrogen","Progesterone","Testosterone","Ovulation","Gamete","Embryo","Fetus","Placenta","STI"],"Body Organization & Homeostasis":["Cell","Tissue","Organ","Organ system","Organism","Homeostasis","Negative feedback","Positive feedback","Anatomical position","Sagittal plane","Frontal plane","Transverse plane","Proximal","Distal","Anterior","Posterior","Superior","Inferior","Medial","Lateral"],"First Responder / Emergency Care":["CPR","AED","Airway","Breathing","Circulation","Triage","Shock","Hemorrhage","Anaphylaxis","Seizure","Stroke","Heart attack","Good Samaritan law","Universal precautions","Recovery position","Splinting","Heimlich maneuver","Tourniquet"]},
-ap:{"Cells & Histology":["Cell membrane","Phospholipid bilayer","Nucleus","Mitochondria","Endoplasmic reticulum","Ribosome","Golgi apparatus","Cytoplasm","Diffusion","Osmosis","Active transport","Mitosis","Meiosis","Epithelial tissue","Connective tissue","Muscle tissue","Nervous tissue","Extracellular matrix","Cell cycle","Apoptosis"],"Integumentary System":["Stratum corneum","Stratum basale","Melanin","Keratin","Sebaceous gland","Eccrine gland","Apocrine gland","Arrector pili","Meissner corpuscle","Pacinian corpuscle","Langerhans cell","Dermal papillae","Hypodermis","Thermoregulation","Vitamin D synthesis"],"Skeletal System":["Ossification","Osteoblast","Osteoclast","Osteocyte","Trabeculae","Red marrow","Yellow marrow","Synovial joint","Ball-and-socket joint","Hinge joint","Intervertebral disc","Endochondral ossification","Intramembranous ossification","Bone remodeling","Epiphyseal plate","Bursae","Axial skeleton","Appendicular skeleton"],"Muscular System":["Sarcomere","Actin","Myosin","Neuromuscular junction","Motor unit","Sliding filament theory","Action potential","Acetylcholine","Muscle fatigue","Oxygen debt","Fast-twitch fiber","Slow-twitch fiber","Isometric contraction","Isotonic contraction","Flexor","Extensor","Synergist","Antagonist","Agonist","Proprioceptor"],"Nervous System":["Resting membrane potential","Action potential","Saltatory conduction","Myelin sheath","Schwann cell","Oligodendrocyte","Synapse","Neurotransmitter","Dopamine","Serotonin","Reflex arc","Autonomic nervous system","Sympathetic","Parasympathetic","Blood-brain barrier","Limbic system","Neuroplasticity","Ganglion"],"Sensory System":["Sensory receptor","Transduction","Accommodation","Visual acuity","Rods","Cones","Optic chiasm","Aqueous humor","Vitreous humor","Organ of Corti","Vestibular system","Otolith","Semicircular canal","Chemoreceptor","Proprioception","Referred pain","Two-point discrimination"],"Endocrine System":["Steroid hormone","Peptide hormone","Second messenger","Receptor","Hypothalamus","Pituitary gland","Adrenal cortex","Adrenal medulla","Thyroid gland","Parathyroid gland","Pancreatic islets","Pineal gland","Negative feedback","Positive feedback","Tropic hormone","Diabetes insipidus","Cushing syndrome","Addison disease","Acromegaly"],"Blood & Hematology":["Plasma","Erythrocyte","Leukocyte","Platelet","Hemoglobin","Blood type","ABO system","Rh factor","Hemostasis","Coagulation","Anemia","Leukemia","Sickle cell disease","Thrombosis","Hematocrit","Serum","Fibrin","Prothrombin","Erythropoiesis","Bone marrow"],"Cardiovascular System":["Atrium","Ventricle","Aorta","Pulmonary artery","Vena cava","Sinoatrial node","Atrioventricular node","Cardiac cycle","Systole","Diastole","Blood pressure","Arteriole","Capillary","Venule","Coronary artery","Stroke volume","Cardiac output","Atherosclerosis","Hypertension","Myocardial infarction"],"Lymphatic & Immune System":["Innate immunity","Adaptive immunity","T-lymphocyte","B-lymphocyte","Natural killer cell","Cytokine","Interleukin","Complement system","Antigen-presenting cell","MHC molecule","Clonal selection","Memory cell","Passive immunity","Active immunity","Hypersensitivity","Lymphedema","MALT"],"Respiratory System":["Alveolus","Bronchiole","Bronchus","Trachea","Larynx","Diaphragm","Pleural cavity","Gas exchange","Oxyhemoglobin","Tidal volume","Vital capacity","Residual volume","Surfactant","Bohr effect","Chemoreceptor","Asthma","COPD","Pneumonia"],"Digestive System":["Salivary amylase","Pepsin","Lipase","Trypsin","Brush border","Lacteal","Portal circulation","Mucosa","Submucosa","Muscularis","Serosa","Chylomicron","Bile salt","Intrinsic factor","Gastrin","Secretin","CCK"],"Urinary System":["Renal cortex","Renal medulla","Renal pelvis","Loop of Henle","Proximal convoluted tubule","Distal convoluted tubule","Collecting duct","Glomerular filtration rate","Tubular secretion","Countercurrent mechanism","Aldosterone","ADH","Renin-angiotensin system","Creatinine","BUN"],"Reproductive System":["Spermatogenesis","Oogenesis","Follicle-stimulating hormone","LH","Corpus luteum","Follicular phase","Luteal phase","Implantation","Human chorionic gonadotropin","Placenta","Umbilical cord","Acrosome reaction","Capacitation","Zygote","Morula","Blastocyst"],"Fluid & Acid-Base Balance":["Intracellular fluid","Extracellular fluid","Interstitial fluid","Osmolarity","Electrolyte","Sodium","Potassium","Calcium","Phosphate","pH","Acidosis","Alkalosis","Buffer system","Bicarbonate","Respiratory compensation","Metabolic compensation","Edema","Dehydration"],"Metabolism & Nutrition":["Metabolism","Anabolism","Catabolism","ATP","Glycolysis","Krebs cycle","Electron transport chain","Gluconeogenesis","Glycogenesis","Lipolysis","Beta oxidation","BMR","Macronutrient","Micronutrient","Essential amino acid","Saturated fat","Unsaturated fat","Fiber","Vitamins"]},
-nur:{"Infection Control & Safety":["Pathogen","Standard precautions","PPE","Hand hygiene","Isolation","Chain of infection","Reservoir","Mode of transmission","Susceptible host","Medical asepsis","Surgical asepsis","MRSA","C. difficile","Disinfection","Sterilization","Contact precautions","Droplet precautions","Airborne precautions","Nosocomial infection"],"Vital Signs & Measurement":["Temperature","Pulse","Respiration","Blood pressure","Pain scale","Thermometer","Sphygmomanometer","Stethoscope","Apical pulse","Bradycardia","Tachycardia","Hypertension","Hypotension","Pyrexia","Intake and output","Orthostatic hypotension","Dyspnea","Pulse oximetry","SpO2","Normal vital sign ranges"],"Medical Terminology":["Prefix","Suffix","Root word","Anterior","Posterior","Lateral","Medial","Proximal","Distal","Superior","Inferior","Dorsal","Ventral","Abduction","Adduction","Flexion","Extension","Prone","Supine","Fowler's position"],"Patient Rights & Communication":["Informed consent","Advance directive","HIPAA","Ombudsman","Abuse","Neglect","Exploitation","Active listening","Therapeutic communication","Objective data","Subjective data","Confidentiality","Dignity","Resident's rights","Grievance","DNR","Power of attorney","Non-verbal communication"],"Personal Care & ADLs":["Ambulation","Range of motion","Body mechanics","Transfer belt","Decubitus ulcer","Incontinence","Catheter","Perineal care","Oral hygiene","Aspiration","Bed bath","Positioning","Contracture","Restorative care","Prosthesis","Assistive device","Splint","Braden scale","Skin integrity"],"Cardiovascular System":["Heart","Artery","Vein","Capillary","Blood pressure","Pulse","Hypertension","Heart failure","Angina","Myocardial infarction","Edema","Cyanosis","Pacemaker","Atherosclerosis","Deep vein thrombosis","Congestive heart failure","Cardiac arrest"],"Respiratory System":["Lung","Airway","Oxygen","Carbon dioxide","Respiration","Dyspnea","Apnea","Hypoxia","Cyanosis","Nebulizer","Incentive spirometer","Tracheostomy","Sputum","COPD","Pneumonia","Asthma","Tuberculosis","Aspiration pneumonia","Pulse oximetry"],"Musculoskeletal System":["Bone","Joint","Muscle","Tendon","Ligament","Range of motion","Flexion","Extension","Abduction","Adduction","Ambulation","Gait","Walker","Cane","Crutches","Fracture","Osteoporosis","Arthritis","Contracture","Body mechanics"],"Nervous System":["Brain","Spinal cord","Neuron","Reflex","Cognition","Orientation","Confusion","Dementia","Alzheimer disease","Stroke","Aphasia","Hemiplegia","Seizure","Paralysis","Parkinson disease","Multiple sclerosis","Coma","Glasgow Coma Scale"],"Integumentary System":["Skin","Epidermis","Dermis","Wound","Decubitus ulcer","Stage I pressure injury","Stage II pressure injury","Stage III pressure injury","Stage IV pressure injury","Wound infection","Drainage","Edema","Jaundice","Cyanosis","Turgor","Rash","Lesion","Braden scale"],"Urinary System":["Kidney","Ureter","Bladder","Urethra","Urine","Urinary catheter","Foley catheter","UTI","Intake and output","Urinary incontinence","Urinary retention","Hematuria","Dysuria","Dialysis","Renal failure","Perineal care"],"Digestive System":["Mouth","Esophagus","Stomach","Small intestine","Large intestine","Bowel movement","Constipation","Diarrhea","Nausea","Vomiting","Ostomy","Colostomy","Ileostomy","NPO","Nasogastric tube","Dysphagia","Aspiration","Enema","Fecal impaction"],"Endocrine System":["Hormone","Diabetes mellitus","Insulin","Blood glucose","Hypoglycemia","Hyperglycemia","Glucometer","Thyroid gland","Hypothyroidism","Hyperthyroidism","Adrenal gland","Cortisol","Pituitary gland","Diabetic ketoacidosis","Signs of hypoglycemia","Signs of hyperglycemia"],"Nutrition & Fluid Intake":["Calorie","Carbohydrate","Protein","Fat","Fiber","Vitamin","Mineral","Hydration","Dehydration","Dysphagia","Thickened liquids","Therapeutic diet","Low sodium diet","Diabetic diet","Aspiration precautions","Feeding assistance","Malnutrition","Intake and output","NPO"]}
+</div>
+</div>
+
+<div class="footer"><div class="footer-text">Built for <strong>NC CTE Health Science teachers</strong> at Ashe County High School and beyond - Aligned to NC DPI CTE standards - No API key required</div></div>
+
+<script>
+var VOCAB = {
+  hs: {
+    "Skeletal System": ["Axial skeleton","Appendicular skeleton","Compact bone","Spongy bone","Periosteum","Medullary cavity","Hematopoiesis","Epiphysis","Diaphysis","Articular cartilage","Ligament","Tendon","Ossification","Red marrow","Osteoporosis","Fracture","Scoliosis","Osteoarthritis","Osteoblast","Osteoclast"],
+    "Muscular System": ["Skeletal muscle","Smooth muscle","Cardiac muscle","Tendon","Contractibility","Extensibility","Elasticity","Excitability","Atrophy","Hypertrophy","Origin","Insertion","Voluntary","Involuntary","Fascia","Muscular dystrophy","Strain","Hernia","Spasm","Tendonitis"],
+    "Integumentary System": ["Epidermis","Dermis","Hypodermis","Keratinocyte","Melanocyte","Sebaceous gland","Sudoriferous gland","Hair follicle","Nail matrix","Vitamin D synthesis","Acne","Dermatitis","Melanoma","Eczema","Alopecia","Pressure ulcer","First-degree burn","Second-degree burn","Third-degree burn","Wound healing"],
+    "Digestive System": ["Peristalsis","Bolus","Chyme","Enzyme","Villus","Liver","Gallbladder","Pancreas","Appendix","Colon","Esophagus","Stomach","Small intestine","Large intestine","Bile","Cholecystitis","GERD","Gastroenteritis","Hepatitis","Cholelithiasis"],
+    "Urinary System": ["Kidney","Nephron","Glomerulus","Filtration","Reabsorption","Ureter","Urethra","Bladder","Urine","Dialysis","UTI","Kidney stones","Renal failure","Electrolyte","Homeostasis"],
+    "Nervous System": ["Neuron","Axon","Dendrite","Synapse","Neurotransmitter","Central nervous system","Peripheral nervous system","Reflex","Meninges","Spinal cord","Cerebrum","Cerebellum","Brain stem","Multiple sclerosis","Epilepsy","Parkinson disease","Stroke","Concussion"],
+    "Sensory System": ["Cornea","Iris","Pupil","Retina","Optic nerve","Cochlea","Ossicles","Eardrum","Olfactory nerve","Taste buds","Mechanoreceptors","Photoreceptors","Rods and cones","Glaucoma","Cataracts","Hearing loss","Tinnitus","Nystagmus"],
+    "Lymphatic and Immune System": ["Lymph node","Lymphocyte","T-cell","B-cell","Antibody","Antigen","Immunity","Vaccine","Pathogen","Spleen","Thymus","Lymph","HIV/AIDS","Allergy","Autoimmune disease","Inflammation","Phagocytosis","Lymphoma"],
+    "Endocrine System": ["Hormone","Pituitary gland","Thyroid gland","Adrenal gland","Pancreas","Insulin","Glucagon","Feedback loop","Target organ","Diabetes mellitus","Hyperthyroidism","Hypothyroidism","Gigantism","Dwarfism","Goiter","Cortisol","Adrenaline","Homeostasis"],
+    "Reproductive System": ["Ovary","Uterus","Fallopian tube","Cervix","Testes","Sperm","Ovum","Fertilization","Menstrual cycle","Estrogen","Progesterone","Testosterone","Ovulation","Gamete","Embryo","Fetus","Placenta","STI"],
+    "Body Organization and Homeostasis": ["Cell","Tissue","Organ","Organ system","Organism","Homeostasis","Negative feedback","Positive feedback","Anatomical position","Sagittal plane","Frontal plane","Transverse plane","Proximal","Distal","Anterior","Posterior","Superior","Inferior","Medial","Lateral"],
+    "First Responder and Emergency Care": ["CPR","AED","Airway","Breathing","Circulation","Triage","Shock","Hemorrhage","Anaphylaxis","Seizure","Stroke","Heart attack","Good Samaritan law","Universal precautions","Recovery position","Splinting","Heimlich maneuver","Tourniquet"]
+  },
+  ap: {
+    "Cells and Histology": ["Cell membrane","Phospholipid bilayer","Nucleus","Mitochondria","Endoplasmic reticulum","Ribosome","Golgi apparatus","Cytoplasm","Diffusion","Osmosis","Active transport","Mitosis","Meiosis","Epithelial tissue","Connective tissue","Muscle tissue","Nervous tissue","Extracellular matrix","Cell cycle","Apoptosis"],
+    "Skeletal System": ["Ossification","Osteoblast","Osteoclast","Osteocyte","Trabeculae","Red marrow","Yellow marrow","Synovial joint","Ball-and-socket joint","Hinge joint","Intervertebral disc","Endochondral ossification","Intramembranous ossification","Bone remodeling","Epiphyseal plate","Bursae","Axial skeleton","Appendicular skeleton"],
+    "Muscular System": ["Sarcomere","Actin","Myosin","Neuromuscular junction","Motor unit","Sliding filament theory","Action potential","Acetylcholine","Muscle fatigue","Oxygen debt","Fast-twitch fiber","Slow-twitch fiber","Isometric contraction","Isotonic contraction","Flexor","Extensor","Synergist","Antagonist","Agonist","Proprioceptor"],
+    "Nervous System": ["Resting membrane potential","Action potential","Saltatory conduction","Myelin sheath","Schwann cell","Oligodendrocyte","Synapse","Neurotransmitter","Dopamine","Serotonin","Reflex arc","Autonomic nervous system","Sympathetic","Parasympathetic","Blood-brain barrier","Limbic system","Neuroplasticity","Ganglion"],
+    "Endocrine System": ["Steroid hormone","Peptide hormone","Second messenger","Receptor","Hypothalamus","Pituitary gland","Adrenal cortex","Adrenal medulla","Thyroid gland","Parathyroid gland","Pancreatic islets","Pineal gland","Negative feedback","Positive feedback","Tropic hormone","Diabetes insipidus","Cushing syndrome","Addison disease","Acromegaly"],
+    "Blood and Hematology": ["Plasma","Erythrocyte","Leukocyte","Platelet","Hemoglobin","Blood type","ABO system","Rh factor","Hemostasis","Coagulation","Anemia","Leukemia","Sickle cell disease","Thrombosis","Hematocrit","Serum","Fibrin","Prothrombin","Erythropoiesis","Bone marrow"],
+    "Cardiovascular System": ["Atrium","Ventricle","Aorta","Pulmonary artery","Vena cava","Sinoatrial node","Atrioventricular node","Cardiac cycle","Systole","Diastole","Blood pressure","Arteriole","Capillary","Venule","Coronary artery","Stroke volume","Cardiac output","Atherosclerosis","Hypertension","Myocardial infarction"],
+    "Respiratory System": ["Alveolus","Bronchiole","Bronchus","Trachea","Larynx","Diaphragm","Pleural cavity","Gas exchange","Oxyhemoglobin","Tidal volume","Vital capacity","Residual volume","Surfactant","Bohr effect","Chemoreceptor","Asthma","COPD","Pneumonia"],
+    "Digestive System": ["Salivary amylase","Pepsin","Lipase","Trypsin","Brush border","Lacteal","Portal circulation","Mucosa","Submucosa","Muscularis","Serosa","Chylomicron","Bile salt","Intrinsic factor","Gastrin","Secretin","CCK"],
+    "Urinary System": ["Renal cortex","Renal medulla","Renal pelvis","Loop of Henle","Proximal convoluted tubule","Distal convoluted tubule","Collecting duct","Glomerular filtration rate","Tubular secretion","Countercurrent mechanism","Aldosterone","ADH","Renin-angiotensin system","Creatinine","BUN"],
+    "Reproductive System": ["Spermatogenesis","Oogenesis","Follicle-stimulating hormone","LH","Corpus luteum","Follicular phase","Luteal phase","Implantation","Human chorionic gonadotropin","Placenta","Umbilical cord","Acrosome reaction","Capacitation","Zygote","Morula","Blastocyst"],
+    "Fluid and Acid-Base Balance": ["Intracellular fluid","Extracellular fluid","Interstitial fluid","Osmolarity","Electrolyte","Sodium","Potassium","Calcium","Phosphate","pH","Acidosis","Alkalosis","Buffer system","Bicarbonate","Respiratory compensation","Metabolic compensation","Edema","Dehydration"],
+    "Metabolism and Nutrition": ["Metabolism","Anabolism","Catabolism","ATP","Glycolysis","Krebs cycle","Electron transport chain","Gluconeogenesis","Glycogenesis","Lipolysis","Beta oxidation","BMR","Macronutrient","Micronutrient","Essential amino acid","Saturated fat","Unsaturated fat","Fiber","Vitamins"]
+  },
+  nur: {
+    "Infection Control and Safety": ["Pathogen","Standard precautions","PPE","Hand hygiene","Isolation","Chain of infection","Reservoir","Mode of transmission","Susceptible host","Medical asepsis","Surgical asepsis","MRSA","C. difficile","Disinfection","Sterilization","Contact precautions","Droplet precautions","Airborne precautions","Nosocomial infection"],
+    "Vital Signs and Measurement": ["Temperature","Pulse","Respiration","Blood pressure","Pain scale","Thermometer","Sphygmomanometer","Stethoscope","Apical pulse","Bradycardia","Tachycardia","Hypertension","Hypotension","Pyrexia","Intake and output","Orthostatic hypotension","Dyspnea","Pulse oximetry","SpO2","Normal vital sign ranges"],
+    "Medical Terminology": ["Prefix","Suffix","Root word","Anterior","Posterior","Lateral","Medial","Proximal","Distal","Superior","Inferior","Dorsal","Ventral","Abduction","Adduction","Flexion","Extension","Prone","Supine","Fowler position"],
+    "Patient Rights and Communication": ["Informed consent","Advance directive","HIPAA","Ombudsman","Abuse","Neglect","Exploitation","Active listening","Therapeutic communication","Objective data","Subjective data","Confidentiality","Dignity","Resident rights","Grievance","DNR","Power of attorney","Non-verbal communication"],
+    "Personal Care and ADLs": ["Ambulation","Range of motion","Body mechanics","Transfer belt","Decubitus ulcer","Incontinence","Catheter","Perineal care","Oral hygiene","Aspiration","Bed bath","Positioning","Contracture","Restorative care","Prosthesis","Assistive device","Splint","Braden scale","Skin integrity"],
+    "Cardiovascular System": ["Heart","Artery","Vein","Capillary","Blood pressure","Pulse","Hypertension","Heart failure","Angina","Myocardial infarction","Edema","Cyanosis","Pacemaker","Atherosclerosis","Deep vein thrombosis","Congestive heart failure","Cardiac arrest"],
+    "Respiratory System": ["Lung","Airway","Oxygen","Carbon dioxide","Respiration","Dyspnea","Apnea","Hypoxia","Cyanosis","Nebulizer","Incentive spirometer","Tracheostomy","Sputum","COPD","Pneumonia","Asthma","Tuberculosis","Aspiration pneumonia","Pulse oximetry"],
+    "Musculoskeletal System": ["Bone","Joint","Muscle","Tendon","Ligament","Range of motion","Flexion","Extension","Abduction","Adduction","Ambulation","Gait","Walker","Cane","Crutches","Fracture","Osteoporosis","Arthritis","Contracture","Body mechanics"],
+    "Nervous System": ["Brain","Spinal cord","Neuron","Reflex","Cognition","Orientation","Confusion","Dementia","Alzheimer disease","Stroke","Aphasia","Hemiplegia","Seizure","Paralysis","Parkinson disease","Multiple sclerosis","Coma","Glasgow Coma Scale"],
+    "Integumentary System": ["Skin","Epidermis","Dermis","Wound","Decubitus ulcer","Stage I pressure injury","Stage II pressure injury","Stage III pressure injury","Stage IV pressure injury","Wound infection","Drainage","Edema","Jaundice","Cyanosis","Turgor","Rash","Lesion","Braden scale"],
+    "Urinary System": ["Kidney","Ureter","Bladder","Urethra","Urine","Urinary catheter","Foley catheter","UTI","Intake and output","Urinary incontinence","Urinary retention","Hematuria","Dysuria","Dialysis","Renal failure","Perineal care"],
+    "Digestive System": ["Mouth","Esophagus","Stomach","Small intestine","Large intestine","Bowel movement","Constipation","Diarrhea","Nausea","Vomiting","Ostomy","Colostomy","Ileostomy","NPO","Nasogastric tube","Dysphagia","Aspiration","Enema","Fecal impaction"],
+    "Endocrine System": ["Hormone","Diabetes mellitus","Insulin","Blood glucose","Hypoglycemia","Hyperglycemia","Glucometer","Thyroid gland","Hypothyroidism","Hyperthyroidism","Adrenal gland","Cortisol","Pituitary gland","Diabetic ketoacidosis","Signs of hypoglycemia","Signs of hyperglycemia"],
+    "Nutrition and Fluid Intake": ["Calorie","Carbohydrate","Protein","Fat","Fiber","Vitamin","Mineral","Hydration","Dehydration","Dysphagia","Thickened liquids","Therapeutic diet","Low sodium diet","Diabetic diet","Aspiration precautions","Feeding assistance","Malnutrition","Intake and output","NPO"]
+  }
 };
 
-// ── SHARED API + COPY ──
-async function callClaude(prompt,maxTok){const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:maxTok||4000,messages:[{role:'user',content:prompt}]})});const d=await r.json();return(d.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').trim();}
-function escH(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function doCopy(id,btn){const text=document.getElementById(id).textContent;const orig=btn.textContent;const ok=()=>{btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent=orig;btn.classList.remove('copied');},2500);};const fail=()=>{btn.textContent='Use Ctrl+A, Ctrl+C';setTimeout(()=>{btn.textContent=orig;},3000);};if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(ok).catch(()=>fbCopy(text,ok,fail));}else{fbCopy(text,ok,fail);}}
-function fbCopy(text,ok,fail){const ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;top:0;left:0;width:2em;height:2em;padding:0;border:none;background:transparent;opacity:0;';document.body.appendChild(ta);ta.focus();ta.select();ta.setSelectionRange(0,ta.value.length);try{document.execCommand('copy')?ok():fail();}catch(e){fail();}document.body.removeChild(ta);}
+var course = "hs";
+var subject = "Skeletal System";
+var lang = "bilingual";
+var cardMode = "study";
+var cardData = [];
 
-// ── CANVA CODE STATE + FUNCTIONS ──
-let cc_course='hs',cc_subject='Skeletal System',cc_lang='bilingual',cc_difficulty='basic',cc_theme='medical-clean',cc_outputMode='flashcard',cc_matchType='term-spanish',cc_cardData=[];
-const CC_THEMES={'medical-clean':'white background, teal (#0F6E56) accent colors, clean professional medical aesthetic','nature-green':'sage green (#E8F5E9) background, forest green (#2D6A4F) accent colors, calm organic feel','bold-navy':'deep navy (#0D1B2A) background, bright cyan (#4CC9F0) accent colors, white text, bold scientific look','warm-coral':'warm cream (#FFF8F0) background, coral (#E76F51) accent colors, friendly approachable feel'};
-function cc_makeVocabGrid(pfx,course,subject){const terms=(VOCAB[course]&&VOCAB[course][subject])||[];const grid=document.getElementById(pfx+'-termGrid');grid.innerHTML='';terms.forEach(t=>{const div=document.createElement('div');div.className='term-item on';const cb=document.createElement('input');cb.type='checkbox';cb.checked=true;cb.addEventListener('change',()=>{div.classList.toggle('on',cb.checked);if(pfx==='cc')cc_updateSelCount();else bc_updateSelCount();});const span=document.createElement('span');span.textContent=t;div.appendChild(cb);div.appendChild(span);div.addEventListener('click',e=>{if(e.target!==cb){cb.checked=!cb.checked;div.classList.toggle('on',cb.checked);if(pfx==='cc')cc_updateSelCount();else bc_updateSelCount();}});grid.appendChild(div);});document.getElementById(pfx+'-vocabMeta').innerHTML=`<strong>${terms.length} terms</strong> loaded for <strong>${subject}</strong>`;if(pfx==='cc')cc_updateSelCount();else bc_updateSelCount();}
-function cc_switchCourse(c){cc_course=c;['hs','ap','nur'].forEach(id=>{document.getElementById('cc-tab-'+id).className='ctab'+(id===c?' a-'+id:'');document.getElementById('cc-panel-'+id).classList.toggle('vis',id===c);});const first=document.querySelector('#cc-pills-'+c+' .pill');if(first){document.querySelectorAll('#cc-pills-'+c+' .pill').forEach(p=>p.classList.remove('active'));first.classList.add('active');cc_subject=first.dataset.val;cc_updateSel();cc_makeVocabGrid('cc',cc_course,cc_subject);}}
-function cc_updateSel(){const el=document.getElementById('cc-selDisp');el.textContent='✓ '+cc_subject;el.classList.add('vis');}
-function cc_selectAll(){document.querySelectorAll('#cc-termGrid .term-item').forEach(d=>{d.classList.add('on');d.querySelector('input').checked=true;});cc_updateSelCount();}
-function cc_deselectAll(){document.querySelectorAll('#cc-termGrid .term-item').forEach(d=>{d.classList.remove('on');d.querySelector('input').checked=false;});cc_updateSelCount();}
-function cc_getTerms(){return[...[...document.querySelectorAll('#cc-termGrid .term-item.on span')].map(s=>s.textContent.trim()),...document.getElementById('cc-addInput').value.split('\n').map(t=>t.trim()).filter(Boolean)].filter((v,i,a)=>a.indexOf(v)===i);}
-function cc_updateSelCount(){const n=cc_getTerms().length;const el=document.getElementById('cc-selCount');el.textContent=n+' term'+(n!==1?'s':'')+' selected';el.classList.toggle('vis',n>0);}
-function cc_setLang(v){cc_lang=v;document.querySelectorAll('#cc-langTog .tog').forEach(t=>t.classList.toggle('active',t.dataset.val===v));const h=document.getElementById('cc-esHdr');if(h)h.style.display=v==='english'?'none':'';if(cc_outputMode==='memory')cc_setMatch(v==='bilingual'?'term-spanish':'term-definition');}
-function cc_setMatch(v){cc_matchType=v;document.querySelectorAll('#cc-matchTog .tog').forEach(t=>t.classList.toggle('active',t.dataset.val===v));}
-function cc_showProg(s,l){document.getElementById('cc-progWrap').classList.toggle('vis',s);if(l)document.getElementById('cc-progLbl').textContent=l;}
-function cc_setProg(p){document.getElementById('cc-progFill').style.width=p+'%';}
-document.querySelectorAll('#cc-pills-hs .pill,#cc-pills-ap .pill,#cc-pills-nur .pill').forEach(p=>{p.addEventListener('click',()=>{p.closest('.spanel').querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));p.classList.add('active');cc_subject=p.dataset.val;cc_updateSel();cc_makeVocabGrid('cc',cc_course,cc_subject);});});
-document.querySelectorAll('#cc-diffGrid .gopt').forEach(p=>{p.addEventListener('click',()=>{document.querySelectorAll('#cc-diffGrid .gopt').forEach(x=>x.classList.remove('active'));p.classList.add('active');cc_difficulty=p.dataset.val;});});
-document.querySelectorAll('#cc-themeGrid .gopt').forEach(p=>{p.addEventListener('click',()=>{document.querySelectorAll('#cc-themeGrid .gopt').forEach(x=>x.classList.remove('active'));p.classList.add('active');cc_theme=p.dataset.val;});});
-document.querySelectorAll('#cc-featGrid .gopt').forEach(p=>{p.addEventListener('click',()=>p.classList.toggle('active'));});
-document.querySelectorAll('#cc-outputGrid .gopt').forEach(p=>{p.addEventListener('click',()=>{document.querySelectorAll('#cc-outputGrid .gopt').forEach(x=>x.classList.remove('active'));p.classList.add('active');cc_outputMode=p.dataset.val;document.getElementById('cc-flashcardOpts').style.display=cc_outputMode==='flashcard'?'block':'none';document.getElementById('cc-memOpts').style.display=cc_outputMode==='memory'?'block':'none';if(cc_outputMode==='memory')cc_setMatch(cc_lang==='bilingual'?'term-spanish':'term-definition');document.getElementById('cc-genIcon').textContent=cc_outputMode==='memory'?'🧩':'✦';document.getElementById('cc-genTxt').textContent=cc_outputMode==='memory'?'Generate Memory Game Prompt':'Generate Flashcard Deck Prompt';});});
-async function cc_generate(){const terms=cc_getTerms();if(!terms.length){alert('Please select at least one term.');return;}if(terms.length>50){alert('Please select 50 or fewer terms.');return;}if(cc_outputMode==='memory'&&terms.length>20){if(!confirm(`${terms.length} terms selected. Memory games work best with 8–12 pairs. Continue?`))return;}const btn=document.getElementById('cc-genBtn');btn.disabled=true;document.getElementById('cc-genTxt').textContent='Generating...';cc_showProg(true,'Building data for '+terms.length+' terms...');cc_setProg(10);const cl=cc_course==='nur'?'CTE Nurse Aide':cc_course==='ap'?'Anatomy & Physiology':'Health Science I';const dn=cc_difficulty==='advanced'?'clinical AP-level (2–3 sentences)':cc_difficulty==='intermediate'?'clear grade-level (1–2 sentences)':'simple introductory (1 sentence)';const ne=cc_lang!=='english';try{const raw=await callClaude(`You are an expert NC health science educator. For each term below from the ${cc_subject} unit (${cl} course), generate:\n${ne?'1. Spanish medical translation\n2.':'1.'} Definition: ${dn}, for high school students.\n\nTerms:\n${terms.map((t,i)=>`${i+1}. ${t}`).join('\n')}\n\nReturn ONLY a valid JSON array. No markdown. Format:\n[{"term":"Femur"${ne?',"spanish":"Fémur"':''},"definition":"The longest bone in the body."}]`,4000);cc_setProg(80);let parsed;try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch{const m=raw.match(/\[[\s\S]+\]/);if(m)parsed=JSON.parse(m[0]);else throw new Error('parse');}cc_cardData=parsed;cc_renderTable();setTimeout(()=>{cc_buildOutput();cc_showProg(false);btn.disabled=false;document.getElementById('cc-genTxt').textContent=cc_outputMode==='memory'?'Generate Memory Game Prompt':'Generate Flashcard Deck Prompt';},300);}catch(e){cc_showProg(false);btn.disabled=false;document.getElementById('cc-genTxt').textContent=cc_outputMode==='memory'?'Generate Memory Game Prompt':'Generate Flashcard Deck Prompt';alert('Error generating data. Please try again.');}}
-function cc_renderTable(){const se=cc_lang!=='english';const tbody=document.getElementById('cc-cardBody');tbody.innerHTML='';document.getElementById('cc-esHdr').style.display=se?'':'none';cc_cardData.forEach((c,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<td class="num">${i+1}</td><td><input value="${escH(c.term)}" oninput="cc_cardData[${i}].term=this.value"></td>${se?`<td><input value="${escH(c.spanish||'')}" style="color:var(--teal);font-style:italic;" oninput="cc_cardData[${i}].spanish=this.value"></td>`:''}<td><input value="${escH(c.definition)}" oninput="cc_cardData[${i}].definition=this.value"></td><td><button class="del-btn" onclick="cc_delCard(${i})">✕</button></td>`;tbody.appendChild(tr);});document.getElementById('cc-prevCnt').textContent=cc_cardData.length+' cards — click to edit';document.getElementById('cc-prevSec').classList.add('vis');document.getElementById('cc-prevSec').scrollIntoView({behavior:'smooth',block:'start'});}
-function cc_delCard(i){cc_cardData.splice(i,1);cc_renderTable();}
-function cc_buildOutput(){const chunks=cc_outputMode==='memory'?cc_buildMemoryChunks():cc_buildFlashcardChunks();const isM=cc_outputMode==='memory';const title=isM?`Memory match game prompts ready — ${cc_cardData.length} pairs`:`Flashcard deck prompts ready — ${cc_cardData.length} cards`;const chunksHTML=chunks.map((text,i)=>{const len=text.length;const id='cc-chunk-'+i;const col=len<=3200?'var(--teal)':len<=3800?'var(--amber)':'#E24B4A';const lbl=i===0?`Step 1 of ${chunks.length} — Build the ${isM?'game':'deck'} structure`:`Step ${i+1} of ${chunks.length} — Add ${isM?'pairs':'cards'}`;return`<div class="chunk-block"><div class="chunk-hdr"><div><div class="chunk-label">${lbl}</div><div class="chunk-count" style="color:${col};">${len.toLocaleString()} / 4,000 chars ${len<=3800?'✓':'⚠'}</div></div><button class="copy-btn" onclick="doCopy('${id}',this)">Copy prompt</button></div><div class="prompt-box" id="${id}">${escH(text)}</div></div>`;}).join('');const howSteps=chunks.map((_,i)=>i===0?`<li><strong>Paste Step 1</strong> into Canva Code and press Enter</li>`:`<li><strong>Paste Step ${i+1}</strong> as a follow-up in the same conversation</li>`).join('');const outSec=document.getElementById('cc-outSec');outSec.innerHTML=`<div class="out-panel"><div class="out-title">${title}</div><div class="out-sub">Split into ${chunks.length} prompt${chunks.length>1?'s':''} — paste in order into the same Canva Code conversation.</div><div class="warn-box"><strong>⚠ Important:</strong> All prompts must go into the <strong>same</strong> Canva Code conversation, one at a time, in order.</div>${chunksHTML}<div class="how-to"><div class="how-to-title">How to use in Canva Code</div><ol><li>Open <strong>Canva</strong>, click <strong>Canva AI</strong>, then select <strong>Code for me</strong></li>${howSteps}<li>Preview → click <strong>Use in a design</strong> to embed it</li><li>Refine with follow-up messages: colors, font, timer, etc.</li></ol></div></div>`;outSec.classList.add('vis');outSec.scrollIntoView({behavior:'smooth',block:'start'});}
-function cc_buildFlashcardChunks(){const se=cc_lang!=='english';const cl=cc_course==='nur'?'CTE Nurse Aide':cc_course==='ap'?'Anatomy & Physiology':'Health Science I';const feats=[...document.querySelectorAll('#cc-featGrid .gopt.active')].map(f=>f.dataset.val);const fs=[];if(feats.includes('progress'))fs.push('progress indicator "Card X of Y"');if(feats.includes('shuffle'))fs.push('Shuffle button');if(feats.includes('score'))fs.push('"Know it / Still learning" buttons with end summary');if(feats.includes('keyboard'))fs.push('keyboard navigation (arrows + spacebar)');const front=se?'FRONT: large bold English term; italic Spanish below in accent color; small subject label at bottom':'FRONT: large bold term; small subject label at bottom';const back=se?'BACK: definition in readable text; small English + Spanish reminder at top':'BACK: definition in readable text; small term reminder at top';const ex=cc_cardData.slice(0,3).map((c,i)=>{let l=`${i+1}. "${c.term}"`;if(se&&c.spanish)l+=` / "${c.spanish}"`;return l+` — "${c.definition}"`;}).join('\n');const s1=`Build an interactive flashcard deck for a ${cl} class — ${cc_subject} unit.\n\nDESIGN: ${CC_THEMES[cc_theme]}. Smooth 3D CSS flip on click/tap. Responsive. No external libraries.\n\nCARD SIDES:\n${front}\n${back}\nSubject label on every card front: "${cc_subject} | ${cl}"\n\nFEATURES: Prev/Next buttons, Restart button${fs.length?', '+fs.join(', '):''}.\n\nCARD DATA: JS array [{term,${se?'spanish,':''}definition}]. First ${Math.min(3,cc_cardData.length)} cards:\n${ex}\n\nMake array easy to extend.`;const rest=cc_cardData.slice(3);const chunks=[s1];for(let i=0;i<rest.length;i+=8){const slice=rest.slice(i,i+8);const isL=i+8>=rest.length;const lines=slice.map(c=>{let l=`${cc_cardData.indexOf(c)+1}. "${c.term}"`;if(se&&c.spanish)l+=` / "${c.spanish}"`;return l+` — "${c.definition}"`;}).join('\n');chunks.push(`Add these cards to the flashcard deck${isL?' (final cards)':''}:\n${lines}${isL?'\n\nUpdate total card count and verify all navigation is correct.':''}`);}return chunks;}
-function cc_buildMemoryChunks(){const cl=cc_course==='nur'?'CTE Nurse Aide':cc_course==='ap'?'Anatomy & Physiology':'Health Science I';const pc=cc_cardData.length;const pd=cc_matchType==='term-spanish'?'Each pair: ENGLISH TERM card matches its SPANISH TERM card.':'Each pair: TERM card matches its DEFINITION card.';const ex=cc_cardData.slice(0,6).map((c,i)=>cc_matchType==='term-spanish'?`  Pair ${i+1}: "${c.term}" ↔ "${c.spanish||c.term}"`:`  Pair ${i+1}: "${c.term}" ↔ "${c.definition}"`).join('\n');const s1=`Build a memory match game for a ${cl} class — ${cc_subject} unit.\n\nDESIGN: ${CC_THEMES[cc_theme]}. Cards face-down, smooth flip on click. Responsive 4/3/2-column grid. No external libraries.\n\nGAME RULES: ${pd}\nAll cards face-down. Click to flip. Match = stay up; no match = flip back after 1 second. Game ends when all ${pc} pairs matched.\n\nFEATURES: Move counter, pairs found (X of ${pc}), timer, shuffle on load, Play again button.\n\nPAIR DATA: JS array [{term,${cc_matchType==='term-spanish'?'spanish':'definition'}}]. First ${Math.min(6,pc)} pairs:\n${ex}\n\nMake array easy to extend.`;const rest=cc_cardData.slice(6);const chunks=[s1];for(let i=0;i<rest.length;i+=10){const slice=rest.slice(i,i+10);const isL=i+10>=rest.length;const lines=slice.map(c=>cc_matchType==='term-spanish'?`  Pair ${cc_cardData.indexOf(c)+1}: "${c.term}" ↔ "${c.spanish||c.term}"`:`  Pair ${cc_cardData.indexOf(c)+1}: "${c.term}" ↔ "${c.definition}"`).join('\n');chunks.push(`Add these pairs to the memory game${isL?' (final pairs)':''}:\n${lines}${isL?`\n\nUpdate total to ${pc} pairs. Verify shuffle and game-over logic work for full set.`:''}`);}return chunks;}
+function showPage(id) {
+  document.querySelectorAll(".page").forEach(function(p){ p.classList.remove("active"); });
+  document.querySelectorAll(".nav-tab").forEach(function(t){ t.classList.remove("active"); });
+  document.getElementById("page-"+id).classList.add("active");
+  var tabs = {csv:0, guide:1};
+  document.querySelectorAll(".nav-tab")[tabs[id]].classList.add("active");
+  window.scrollTo(0,0);
+}
 
-// ── BULK CREATE STATE + FUNCTIONS ──
-let bc_course='hs',bc_subject='Skeletal System',bc_lang='bilingual',bc_difficulty='basic',bc_labelStyle='labeled',bc_backStyle='image-only',bc_cardSetMode='study',bc_cardData=[];
-function bc_switchCourse(c){bc_course=c;['hs','ap','nur'].forEach(id=>{document.getElementById('bc-tab-'+id).className='ctab'+(id===c?' a-'+id:'');document.getElementById('bc-panel-'+id).classList.toggle('vis',id===c);});const first=document.querySelector('#bc-pills-'+c+' .pill');if(first){document.querySelectorAll('#bc-pills-'+c+' .pill').forEach(p=>p.classList.remove('active'));first.classList.add('active');bc_subject=first.dataset.val;bc_updateSel();bc_makeVocabGrid('bc',bc_course,bc_subject);}}
-function bc_makeVocabGrid(pfx,course,subject){cc_makeVocabGrid(pfx,course,subject);}
-function bc_updateSel(){const el=document.getElementById('bc-selDisp');el.textContent='✓ '+bc_subject;el.classList.add('vis');}
-function bc_selectAll(){document.querySelectorAll('#bc-termGrid .term-item').forEach(d=>{d.classList.add('on');d.querySelector('input').checked=true;});bc_updateSelCount();}
-function bc_deselectAll(){document.querySelectorAll('#bc-termGrid .term-item').forEach(d=>{d.classList.remove('on');d.querySelector('input').checked=false;});bc_updateSelCount();}
-function bc_getTerms(){return[...[...document.querySelectorAll('#bc-termGrid .term-item.on span')].map(s=>s.textContent.trim()),...document.getElementById('bc-addInput').value.split('\n').map(t=>t.trim()).filter(Boolean)].filter((v,i,a)=>a.indexOf(v)===i);}
-function bc_updateSelCount(){const n=bc_getTerms().length;const el=document.getElementById('bc-selCount');el.textContent=n+' term'+(n!==1?'s':'')+' selected';el.classList.toggle('vis',n>0);}
-function bc_setLang(v){bc_lang=v;document.querySelectorAll('#bc-langTog .tog').forEach(t=>t.classList.toggle('active',t.dataset.val===v));}
-function bc_setLabels(v){bc_labelStyle=v;document.querySelectorAll('#bc-labelTog .tog').forEach(t=>t.classList.toggle('active',t.dataset.val===v));}
-function bc_setBack(v){bc_backStyle=v;document.querySelectorAll('#bc-backTog .tog').forEach(t=>t.classList.toggle('active',t.dataset.val===v));}
-function bc_showProg(s,l){document.getElementById('bc-progWrap').classList.toggle('vis',s);if(l)document.getElementById('bc-progLbl').textContent=l;}
-function bc_setProg(p){document.getElementById('bc-progFill').style.width=p+'%';}
-document.querySelectorAll('#bc-pills-hs .pill,#bc-pills-ap .pill,#bc-pills-nur .pill').forEach(p=>{p.addEventListener('click',()=>{p.closest('.spanel').querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));p.classList.add('active');bc_subject=p.dataset.val;bc_updateSel();cc_makeVocabGrid('bc',bc_course,bc_subject);});});
-document.querySelectorAll('#bc-diffGrid .gopt').forEach(p=>{p.addEventListener('click',()=>{document.querySelectorAll('#bc-diffGrid .gopt').forEach(x=>x.classList.remove('active'));p.classList.add('active');bc_difficulty=p.dataset.val;});});
-document.querySelectorAll('#bc-modeGrid .gopt').forEach(p=>{p.addEventListener('click',()=>{document.querySelectorAll('#bc-modeGrid .gopt').forEach(x=>x.classList.remove('active'));p.classList.add('active');bc_cardSetMode=p.dataset.val;document.getElementById('bc-qaInfo').style.display=(bc_cardSetMode==='qa-pairs'||bc_cardSetMode==='both')?'block':'none';const lbl=bc_cardSetMode==='study'?'Study Card CSV':bc_cardSetMode==='qa-pairs'?'Q&A Pairs CSV':'Full Card Set CSV';document.getElementById('bc-genBtn').innerHTML=`<span>⬇</span> Generate ${lbl}`;});});
-async function bc_generate(){const terms=bc_getTerms();if(!terms.length){alert('Please select at least one term.');return;}const btn=document.getElementById('bc-genBtn');btn.disabled=true;btn.innerHTML='<span>⏳</span> Generating...';bc_showProg(true,'Building card data for '+terms.length+' terms...');bc_setProg(8);const cl=bc_course==='nur'?'CTE Nurse Aide':bc_course==='ap'?'Anatomy & Physiology':'Health Science I';const dn=bc_difficulty==='advanced'?'clinical AP-level (2 sentences)':bc_difficulty==='intermediate'?'grade-level (1–2 sentences)':'simple introductory (1 sentence)';const ne=bc_lang!=='english';const ln=bc_labelStyle==='labeled'?'Include clear anatomical callout labels with leader lines.':'NO labels — clean illustration only.';const bn=bc_backStyle==='image-term'?'Card back: same structure, larger composition, no labels.':'Card back: structure fills image, no labels, no text.';const nq=bc_cardSetMode==='qa-pairs'||bc_cardSetMode==='both';const qn=nq?`\n${ne?'6':'5'}. question: A concise exam-style question (max 100 chars) whose answer IS this term.`:'';try{const raw=await callClaude(`You are an expert NC health science educator and medical illustrator. For each term below from the ${bc_subject} unit (${cl}), generate:\n${ne?'1. Spanish medical translation\n2.':'1.'} Definition: ${dn}, for high school.\n${ne?'3':'2'}. image_prompt: Precise anatomical illustration for Canva AI (max 120 chars). Best view. ${ln} Content only.\n${ne?'4':'3'}. back_image_prompt: ${bn} Max 120 chars.\n${ne?'5':'4'}. best_view: Short phrase (e.g. "Anterior")${qn}\n\nTerms:\n${terms.map((t,i)=>`${i+1}. ${t}`).join('\n')}\n\nReturn ONLY a valid JSON array. No markdown.\n[{"term":"Femur"${ne?',"spanish":"Fémur"':''},"definition":"The longest bone.","image_prompt":"Femur bone anterior view","back_image_prompt":"Femur bone large detailed","best_view":"Anterior"${nq?',"question":"What is the longest bone in the human body?"':''}}]`,5000);bc_setProg(80);let parsed;try{parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch{const m=raw.match(/\[[\s\S]+\]/);if(m)parsed=JSON.parse(m[0]);else throw new Error('parse');}bc_cardData=parsed.map(c=>({...c,subject:bc_subject,course:cl}));bc_setProg(95);bc_renderTable();bc_buildOutputSection(cl);bc_showProg(false);const lbl=bc_cardSetMode==='study'?'Study Card CSV':bc_cardSetMode==='qa-pairs'?'Q&A Pairs CSV':'Full Card Set CSV';btn.disabled=false;btn.innerHTML=`<span>⬇</span> Generate ${lbl}`;}catch(e){bc_showProg(false);const lbl=bc_cardSetMode==='study'?'Study Card CSV':bc_cardSetMode==='qa-pairs'?'Q&A Pairs CSV':'Full Card Set CSV';btn.disabled=false;btn.innerHTML=`<span>⬇</span> Generate ${lbl}`;alert('Error generating data. Please try again.');}}
-function bc_renderTable(){const se=bc_lang!=='english';const sq=bc_cardSetMode==='qa-pairs'||bc_cardSetMode==='both';const head=document.getElementById('bc-tblHead');const body=document.getElementById('bc-tblBody');head.innerHTML=`<tr><th>#</th><th>Term</th>${se?'<th>Spanish</th>':''}<th>Definition</th>${sq?'<th>Question</th>':''}<th>Image prompt</th><th>View</th><th>Back prompt</th><th></th></tr>`;body.innerHTML='';bc_cardData.forEach((c,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<td class="num">${i+1}</td><td><input value="${escH(c.term)}" oninput="bc_cardData[${i}].term=this.value"></td>${se?`<td><input value="${escH(c.spanish||'')}" style="color:var(--teal);font-style:italic;" oninput="bc_cardData[${i}].spanish=this.value"></td>`:''}<td><textarea oninput="bc_cardData[${i}].definition=this.value">${escH(c.definition)}</textarea></td>${sq?`<td><textarea oninput="bc_cardData[${i}].question=this.value">${escH(c.question||'')}</textarea></td>`:''}<td><textarea oninput="bc_cardData[${i}].image_prompt=this.value">${escH(c.image_prompt||'')}</textarea></td><td><input value="${escH(c.best_view||'')}" oninput="bc_cardData[${i}].best_view=this.value"></td><td><textarea oninput="bc_cardData[${i}].back_image_prompt=this.value">${escH(c.back_image_prompt||'')}</textarea></td><td><button class="del-btn" onclick="bc_delCard(${i})">✕</button></td>`;body.appendChild(tr);});const ml=bc_cardSetMode==='study'?`${bc_cardData.length} study cards`:bc_cardSetMode==='qa-pairs'?`${bc_cardData.length} terms → ${bc_cardData.length*2} Q&A pair cards`:`${bc_cardData.length} terms → ${bc_cardData.length*3} total rows`;document.getElementById('bc-tblMeta').textContent=ml+' — click to edit';document.getElementById('bc-prevSec').classList.add('vis');document.getElementById('bc-prevSec').scrollIntoView({behavior:'smooth',block:'start'});}
-function bc_delCard(i){bc_cardData.splice(i,1);bc_renderTable();}
-function bc_buildOutputSection(cl){const se=bc_lang!=='english';const hq=bc_cardSetMode==='qa-pairs'||bc_cardSetMode==='both';const tr=bc_cardSetMode==='study'?bc_cardData.length:bc_cardSetMode==='qa-pairs'?bc_cardData.length*2:bc_cardData.length*3;document.getElementById('bc-outSub').textContent=`Your CSV has ${tr} rows. Use the card_type column to filter when running Bulk Create.`;const cd={card_type:'Row type — use to filter: study_card, question_card, answer_card',term_en:'English term → {{term_en}}',term_es:'Spanish → {{term_es}}',definition:'Definition → {{definition}}',question:'Exam question (Q&A only) → {{question}}',image_prompt:'Paste into Canva AI image generator for front',best_view:'Anatomical view — reference only',back_image_prompt:'Paste into Canva AI for card back',subject:'Body system → {{subject}}',course:'Course → {{course}}'};const cols=['card_type','term_en',...(se?['term_es']:[]),'definition','question','image_prompt','best_view','back_image_prompt','subject','course'];document.getElementById('bc-colKey').innerHTML=cols.map(c=>`<div class="col-item"><div class="col-name">${c}</div><div class="col-desc">${cd[c]||c}</div></div>`).join('');const howList=document.getElementById('bc-howToList');if(hq){howList.innerHTML=`<li><strong>Download the CSV</strong> using the button above in the preview table</li><li>Create two Canva templates — one for question cards with <code>{{question}}</code>, one for answer cards with <code>{{term_en}}</code>${se?` and <code>{{term_es}}</code>`:''}</li><li>Filter CSV to <code>question_card</code> rows → run Bulk Create on question template</li><li>Filter CSV to <code>answer_card</code> rows → run Bulk Create on answer template</li><li>See the <strong>Teacher Guide</strong> tab for the complete Q&amp;A pairs workflow</li>`;}else{howList.innerHTML=`<li><strong>Download the CSV</strong> above</li><li>In Canva, open your flashcard template → click <strong>Apps → Bulk Create → Upload CSV</strong></li><li>Connect columns to placeholders → click <strong>Generate designs</strong></li><li>For each card, paste <code>image_prompt</code> into Canva's AI image generator</li><li>See the <strong>Teacher Guide</strong> tab for the complete step-by-step walkthrough</li>`;}document.getElementById('bc-outSec').classList.add('vis');document.getElementById('bc-outSec').scrollIntoView({behavior:'smooth',block:'start'});}
-function bc_downloadCSV(){if(!bc_cardData.length){alert('Generate card data first.');return;}const se=bc_lang!=='english';const hq=bc_cardSetMode==='qa-pairs'||bc_cardSetMode==='both';const q=v=>{const s=String(v||'').replace(/"/g,'""');return(s.includes(',')||s.includes('"')||s.includes('\n'))?`"${s}"`:s;};const hdrs=['card_type','term_en',...(se?['term_es']:[]),'definition','question','image_prompt','best_view','back_image_prompt','subject','course'];const rows=[hdrs.join(',')];bc_cardData.forEach(c=>{if(bc_cardSetMode==='study'||bc_cardSetMode==='both'){rows.push(['study_card',c.term,...(se?[c.spanish||'']:[]),c.definition,'',c.image_prompt||'',c.best_view||'',c.back_image_prompt||'',c.subject,c.course].map(q).join(','));}if(hq){rows.push(['question_card',c.term,...(se?[c.spanish||'']:[]),c.definition,c.question||'','','','',c.subject,c.course].map(q).join(','));rows.push(['answer_card',c.term,...(se?[c.spanish||'']:[]),c.definition,c.question||'',c.image_prompt||'',c.best_view||'',c.back_image_prompt||'',c.subject,c.course].map(q).join(','));}});const blob=new Blob([rows.join('\n')],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');const slug=bc_cardSetMode==='study'?'study-cards':bc_cardSetMode==='qa-pairs'?'qa-pairs':'full-card-set';a.href=url;a.download=`${bc_subject.replace(/[^a-z0-9]+/gi,'-').toLowerCase()}-${slug}.csv`;a.click();URL.revokeObjectURL(url);const btn=document.getElementById('bc-dlBtn');btn.textContent='✓ Downloaded!';setTimeout(()=>{btn.innerHTML='⬇ Download CSV';},2500);}
+function scrollGs(id) {
+  var el = document.getElementById(id);
+  if (el) el.scrollIntoView({behavior:"smooth", block:"start"});
+}
 
-// ── INIT ──
-cc_updateSel();cc_makeVocabGrid('cc',cc_course,cc_subject);document.getElementById('cc-memOpts').style.display='none';
-bc_updateSel();cc_makeVocabGrid('bc',bc_course,bc_subject);document.getElementById('bc-qaInfo').style.display='none';
+function switchCourse(c) {
+  course = c;
+  ["hs","ap","nur"].forEach(function(id){
+    document.getElementById("tab-"+id).className = "ctab" + (id===c ? " a-"+id : "");
+    document.getElementById("panel-"+id).classList.toggle("vis", id===c);
+  });
+  var first = document.querySelector("#pills-"+c+" .pill");
+  if (first) {
+    document.querySelectorAll("#pills-"+c+" .pill").forEach(function(p){ p.classList.remove("active"); });
+    first.classList.add("active");
+    subject = first.dataset.val;
+    updateSelDisp();
+    loadVocab();
+  }
+}
+
+function selectSubject(btn, c) {
+  document.querySelectorAll("#pills-"+c+" .pill").forEach(function(p){ p.classList.remove("active"); });
+  btn.classList.add("active");
+  subject = btn.dataset.val;
+  updateSelDisp();
+  loadVocab();
+}
+
+function updateSelDisp() {
+  var el = document.getElementById("selDisp");
+  el.textContent = "Selected: " + subject;
+  el.classList.add("vis");
+}
+
+function loadVocab() {
+  var terms = (VOCAB[course] && VOCAB[course][subject]) ? VOCAB[course][subject] : [];
+  var grid = document.getElementById("termGrid");
+  grid.innerHTML = "";
+  terms.forEach(function(t) {
+    var div = document.createElement("div");
+    div.className = "term-item on";
+    var cb = document.createElement("input");
+    cb.type = "checkbox"; cb.checked = true;
+    cb.addEventListener("change", function(){ div.classList.toggle("on", cb.checked); updateSelCount(); });
+    var span = document.createElement("span"); span.textContent = t;
+    div.appendChild(cb); div.appendChild(span);
+    div.addEventListener("click", function(e){
+      if (e.target !== cb) { cb.checked = !cb.checked; div.classList.toggle("on", cb.checked); updateSelCount(); }
+    });
+    grid.appendChild(div);
+  });
+  document.getElementById("vocabMeta").innerHTML = "<strong>"+terms.length+" terms</strong> loaded for <strong>"+subject+"</strong>";
+  updateSelCount();
+}
+
+function selectAll() {
+  document.querySelectorAll("#termGrid .term-item").forEach(function(d){ d.classList.add("on"); d.querySelector("input").checked = true; });
+  updateSelCount();
+}
+
+function deselectAll() {
+  document.querySelectorAll("#termGrid .term-item").forEach(function(d){ d.classList.remove("on"); d.querySelector("input").checked = false; });
+  updateSelCount();
+}
+
+function getTerms() {
+  var checked = Array.from(document.querySelectorAll("#termGrid .term-item.on span")).map(function(s){ return s.textContent.trim(); });
+  var added = document.getElementById("addInput").value.split("\n").map(function(t){ return t.trim(); }).filter(function(t){ return t.length > 0; });
+  return checked.concat(added).filter(function(v,i,a){ return a.indexOf(v)===i; });
+}
+
+function updateSelCount() {
+  var n = getTerms().length;
+  var el = document.getElementById("selCount");
+  el.textContent = n + " term" + (n!==1?"s":"") + " selected";
+  el.classList.toggle("vis", n>0);
+}
+
+function setLang(v) {
+  lang = v;
+  ["bilingual","english","spanish"].forEach(function(x){
+    document.getElementById("lang-"+x).classList.toggle("active", x===v);
+  });
+}
+
+function setMode(v) {
+  cardMode = v;
+  ["study","qa","both"].forEach(function(x){
+    document.getElementById("mode-"+x).classList.toggle("active", x===v);
+  });
+  document.getElementById("qaNote").style.display = (v==="qa"||v==="both") ? "block" : "none";
+}
+
+function getCL() {
+  return course==="nur" ? "CTE Nurse Aide" : course==="ap" ? "Anatomy and Physiology" : "Health Science I";
+}
+
+function generateCSV() {
+  var terms = getTerms();
+  if (!terms.length) { alert("Please select at least one vocabulary term."); return; }
+  var cl = getCL();
+  var hasEs = lang !== "english";
+  var hasQA = cardMode === "qa" || cardMode === "both";
+
+  cardData = [];
+  terms.forEach(function(t) {
+    if (cardMode === "study" || cardMode === "both") {
+      cardData.push({card_type:"study_card", term_en:t, term_es:"", definition:"", question:"", subject:subject, course:cl});
+    }
+    if (hasQA) {
+      cardData.push({card_type:"question_card", term_en:t, term_es:"", definition:"", question:"", subject:subject, course:cl});
+      cardData.push({card_type:"answer_card", term_en:t, term_es:"", definition:"", question:"", subject:subject, course:cl});
+    }
+  });
+
+  renderTable(hasEs, hasQA);
+  renderOutputPanel(terms.length, cl, hasEs, hasQA);
+  document.getElementById("prevSec").classList.add("vis");
+  document.getElementById("prevSec").scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+function renderTable(hasEs, hasQA) {
+  var head = document.getElementById("tblHead");
+  var body = document.getElementById("tblBody");
+  head.innerHTML = "<tr><th>#</th><th>card_type</th><th>term_en</th>" +
+    (hasEs ? "<th>term_es (fill in)</th>" : "") +
+    "<th>definition (fill in)</th>" +
+    (hasQA ? "<th>question (fill in)</th>" : "") +
+    "<th>subject</th><th></th></tr>";
+  body.innerHTML = "";
+  cardData.forEach(function(c, i) {
+    var tr = document.createElement("tr");
+    var typeColor = c.card_type==="question_card" ? "color:#534AB7;font-weight:600;" : c.card_type==="answer_card" ? "color:#3B6D11;font-weight:600;" : "";
+    tr.innerHTML = "<td class='num'>"+(i+1)+"</td>" +
+      "<td><span style='font-size:11px;font-weight:600;"+typeColor+"'>"+c.card_type+"</span></td>" +
+      "<td class='term-cell'>"+escH(c.term_en)+"</td>" +
+      (hasEs ? "<td class='ph'><input placeholder='Enter Spanish...' oninput="cardData["+i+"].term_es=this.value" value='"+escH(c.term_es)+"'></td>" : "") +
+      "<td><textarea placeholder='Enter definition...' oninput="cardData["+i+"].definition=this.value">"+escH(c.definition)+"</textarea></td>" +
+      (hasQA ? "<td><textarea placeholder='Enter question...' oninput="cardData["+i+"].question=this.value">"+escH(c.question)+"</textarea></td>" : "") +
+      "<td style='font-size:11px;color:var(--ink-h);'>"+escH(c.subject)+"</td>" +
+      "<td><button class='del-btn' onclick='delRow("+i+")'>x</button></td>";
+    body.appendChild(tr);
+  });
+  var terms = getTerms();
+  var cl = getCL();
+  var hasQA2 = cardMode==="qa"||cardMode==="both";
+  var rowCount = cardMode==="study" ? terms.length : cardMode==="qa" ? terms.length*2 : terms.length*3;
+  document.getElementById("tblMeta").textContent = rowCount+" rows - "+terms.length+" terms - click any cell to edit before downloading";
+}
+
+function delRow(i) {
+  cardData.splice(i,1);
+  var hasEs = lang!=="english";
+  var hasQA = cardMode==="qa"||cardMode==="both";
+  renderTable(hasEs, hasQA);
+}
+
+function renderOutputPanel(termCount, cl, hasEs, hasQA) {
+  var rowCount = cardMode==="study" ? termCount : cardMode==="qa" ? termCount*2 : termCount*3;
+  var slug = subject.replace(/[^a-z0-9]+/gi,"-").toLowerCase();
+  document.getElementById("dlSub").textContent = rowCount+" rows ready - fill in definitions"+(hasEs?" and Spanish translations":"")+" in Excel or Google Sheets before uploading to Canva.";
+
+  var colDefs = [
+    {name:"card_type", desc:"Row type for filtering", status:"auto"},
+    {name:"term_en", desc:"English vocabulary term - maps to {{term_en}}", status:"auto"},
+  ];
+  if (hasEs) colDefs.push({name:"term_es", desc:"Spanish translation - YOU fill in - maps to {{term_es}}", status:"manual"});
+  colDefs.push({name:"definition", desc:"Grade-level definition - YOU fill in - maps to {{definition}}", status:"manual"});
+  if (hasQA) colDefs.push({name:"question", desc:"Exam question for Q&A cards - YOU fill in - maps to {{question}}", status:"manual"});
+  colDefs.push({name:"subject", desc:"Body system label - maps to {{subject}}", status:"auto"});
+  colDefs.push({name:"course", desc:"Course name - maps to {{course}}", status:"auto"});
+
+  var colKeyHTML = colDefs.map(function(c){
+    var badge = c.status==="auto"
+      ? "<span class='col-badge filled'>Auto-filled</span>"
+      : "<span class='col-badge blank'>You fill in</span>";
+    return "<div class='col-item'><div class='col-name'>"+c.name+badge+"</div><div class='col-desc'>"+c.desc+"</div></div>";
+  }).join("");
+  document.getElementById("colKey").innerHTML = colKeyHTML;
+
+  var steps = [
+    "<li style='font-size:13px;color:var(--ink-m);line-height:1.8;'><strong>Download the CSV</strong> using the button above</li>",
+    "<li style='font-size:13px;color:var(--ink-m);line-height:1.8;'><strong>Open in Google Sheets</strong> (File - Import - Upload) or Excel</li>",
+    "<li style='font-size:13px;color:var(--ink-m);line-height:1.8;'><strong>Fill in the <code style="font-family:Courier New;font-size:12px;background:var(--teal-bg);color:var(--teal);padding:1px 4px;border-radius:3px;">definition</code> column</strong> for each term - one definition per row</li>",
+  ];
+  if (hasEs) steps.push("<li style='font-size:13px;color:var(--ink-m);line-height:1.8;'><strong>Fill in <code style="font-family:Courier New;font-size:12px;background:var(--teal-bg);color:var(--teal);padding:1px 4px;border-radius:3px;">term_es</code></strong> using Google Translate or a medical Spanish dictionary</li>");
+  if (hasQA) steps.push("<li style='font-size:13px;color:var(--ink-m);line-height:1.8;'><strong>Fill in <code style="font-family:Courier New;font-size:12px;background:var(--teal-bg);color:var(--teal);padding:1px 4px;border-radius:3px;">question</code></strong> for each term - write an exam-style question whose answer is that term</li>");
+  steps.push("<li style='font-size:13px;color:var(--ink-m);line-height:1.8;'><strong>Save as CSV</strong> (File - Download - Comma Separated Values)</li>");
+  steps.push("<li style='font-size:13px;color:var(--ink-m);line-height:1.8;'><strong>Open your Canva template</strong> - add placeholders like <code style="font-family:Courier New;font-size:12px;background:var(--teal-bg);color:var(--teal);padding:1px 4px;border-radius:3px;">{{term_en}}</code> to text boxes</li>");
+  steps.push("<li style='font-size:13px;color:var(--ink-m);line-height:1.8;'><strong>Open Apps - Bulk Create</strong> in Canva - upload your completed CSV - Generate designs</li>");
+  steps.push("<li style='font-size:13px;color:var(--ink-m);line-height:1.8;'>See the <strong>Teacher Guide tab</strong> for detailed instructions on every step above</li>");
+
+  document.getElementById("nextStepsList").innerHTML = steps.join("");
+}
+
+function downloadCSV() {
+  if (!cardData.length) { alert("Build the CSV first."); return; }
+  var hasEs = lang !== "english";
+  var hasQA = cardMode==="qa"||cardMode==="both";
+  var q = function(v) {
+    var s = String(v||"").replace(/"/g,'""');
+    return (s.indexOf(",")>=0||s.indexOf('"')>=0||s.indexOf("\n")>=0) ? '"'+s+'"' : s;
+  };
+  var headers = ["card_type","term_en"];
+  if (hasEs) headers.push("term_es");
+  headers.push("definition");
+  if (hasQA) headers.push("question");
+  headers.push("subject","course");
+  var rows = [headers.join(",")];
+  cardData.forEach(function(c){
+    var row = [c.card_type, c.term_en];
+    if (hasEs) row.push(c.term_es||"");
+    row.push(c.definition||"");
+    if (hasQA) row.push(c.question||"");
+    row.push(c.subject, c.course);
+    rows.push(row.map(q).join(","));
+  });
+  var blob = new Blob([rows.join("\n")], {type:"text/csv;charset=utf-8;"});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  var modeSlug = cardMode==="study"?"study-cards":cardMode==="qa"?"qa-pairs":"full-card-set";
+  a.href = url; a.download = slug+"-"+modeSlug+".csv"; a.click();
+  URL.revokeObjectURL(url);
+  var btn = document.getElementById("dlBtn");
+  btn.textContent = "Downloaded!";
+  setTimeout(function(){ btn.innerHTML = "&#11015; Download CSV"; }, 2500);
+}
+
+function escH(s) {
+  return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+loadVocab();
+updateSelDisp();
 </script>
 </body>
 </html>
