@@ -779,6 +779,7 @@ function downloadCSV() {
   var url = URL.createObjectURL(blob);
   var a = document.createElement("a");
   var modeSlug = cardMode==="study"?"study-cards":cardMode==="qa"?"qa-pairs":"full-card-set";
+  var slug = subject.replace(/[^a-z0-9]+/gi,"-").toLowerCase();
   a.href = url; a.download = slug+"-"+modeSlug+".csv"; a.click();
   URL.revokeObjectURL(url);
   var btn = document.getElementById("dlBtn");
