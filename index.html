@@ -641,28 +641,59 @@ function generateCSV() {
 function renderTable(hasEs, hasQA) {
   var head = document.getElementById("tblHead");
   var body = document.getElementById("tblBody");
-  head.innerHTML = "<tr><th>#</th><th>card_type</th><th>term_en</th>" +
-    (hasEs ? "<th>term_es (fill in)</th>" : "") +
-    "<th>definition (fill in)</th>" +
-    (hasQA ? "<th>question (fill in)</th>" : "") +
-    "<th>subject</th><th></th></tr>";
+
+  var hrow = document.createElement("tr");
+  ["#","card_type","term_en"].forEach(function(h){ var th=document.createElement("th"); th.textContent=h; hrow.appendChild(th); });
+  if (hasEs) { var th=document.createElement("th"); th.textContent="term_es (fill in)"; hrow.appendChild(th); }
+  var thd=document.createElement("th"); thd.textContent="definition (fill in)"; hrow.appendChild(thd);
+  if (hasQA) { var thq=document.createElement("th"); thq.textContent="question (fill in)"; hrow.appendChild(thq); }
+  var ths=document.createElement("th"); ths.textContent="subject"; hrow.appendChild(ths);
+  hrow.appendChild(document.createElement("th"));
+  head.innerHTML=""; head.appendChild(hrow);
+
   body.innerHTML = "";
   cardData.forEach(function(c, i) {
     var tr = document.createElement("tr");
-    var typeColor = c.card_type==="question_card" ? "color:#534AB7;font-weight:600;" : c.card_type==="answer_card" ? "color:#3B6D11;font-weight:600;" : "";
-    tr.innerHTML = "<td class='num'>"+(i+1)+"</td>" +
-      "<td><span style='font-size:11px;font-weight:600;"+typeColor+"'>"+c.card_type+"</span></td>" +
-      "<td class='term-cell'>"+escH(c.term_en)+"</td>" +
-      (hasEs ? "<td class='ph'><input placeholder='Enter Spanish...' oninput="cardData["+i+"].term_es=this.value" value='"+escH(c.term_es)+"'></td>" : "") +
-      "<td><textarea placeholder='Enter definition...' oninput="cardData["+i+"].definition=this.value">"+escH(c.definition)+"</textarea></td>" +
-      (hasQA ? "<td><textarea placeholder='Enter question...' oninput="cardData["+i+"].question=this.value">"+escH(c.question)+"</textarea></td>" : "") +
-      "<td style='font-size:11px;color:var(--ink-h);'>"+escH(c.subject)+"</td>" +
-      "<td><button class='del-btn' onclick='delRow("+i+")'>x</button></td>";
+
+    var tdN=document.createElement("td"); tdN.className="num"; tdN.textContent=i+1; tr.appendChild(tdN);
+
+    var tdT=document.createElement("td");
+    var sp=document.createElement("span");
+    sp.style.cssText="font-size:11px;font-weight:600;"+(c.card_type==="question_card"?"color:#534AB7;":c.card_type==="answer_card"?"color:#3B6D11;":"");
+    sp.textContent=c.card_type; tdT.appendChild(sp); tr.appendChild(tdT);
+
+    var tdE=document.createElement("td"); tdE.className="term-cell"; tdE.textContent=c.term_en; tr.appendChild(tdE);
+
+    if (hasEs) {
+      var tdEs=document.createElement("td"); tdEs.className="ph";
+      var inEs=document.createElement("input"); inEs.placeholder="Enter Spanish..."; inEs.value=c.term_es||"";
+      (function(idx){ inEs.addEventListener("input",function(){ cardData[idx].term_es=this.value; }); })(i);
+      tdEs.appendChild(inEs); tr.appendChild(tdEs);
+    }
+
+    var tdDef=document.createElement("td");
+    var taDef=document.createElement("textarea"); taDef.placeholder="Enter definition..."; taDef.value=c.definition||"";
+    (function(idx){ taDef.addEventListener("input",function(){ cardData[idx].definition=this.value; }); })(i);
+    tdDef.appendChild(taDef); tr.appendChild(tdDef);
+
+    if (hasQA) {
+      var tdQ=document.createElement("td");
+      var taQ=document.createElement("textarea"); taQ.placeholder="Enter question..."; taQ.value=c.question||"";
+      (function(idx){ taQ.addEventListener("input",function(){ cardData[idx].question=this.value; }); })(i);
+      tdQ.appendChild(taQ); tr.appendChild(tdQ);
+    }
+
+    var tdS=document.createElement("td"); tdS.style.cssText="font-size:11px;color:var(--ink-h);"; tdS.textContent=c.subject; tr.appendChild(tdS);
+
+    var tdX=document.createElement("td");
+    var btnX=document.createElement("button"); btnX.className="del-btn"; btnX.textContent="x";
+    (function(idx){ btnX.addEventListener("click",function(){ delRow(idx); }); })(i);
+    tdX.appendChild(btnX); tr.appendChild(tdX);
+
     body.appendChild(tr);
   });
+
   var terms = getTerms();
-  var cl = getCL();
-  var hasQA2 = cardMode==="qa"||cardMode==="both";
   var rowCount = cardMode==="study" ? terms.length : cardMode==="qa" ? terms.length*2 : terms.length*3;
   document.getElementById("tblMeta").textContent = rowCount+" rows - "+terms.length+" terms - click any cell to edit before downloading";
 }
@@ -697,19 +728,29 @@ function renderOutputPanel(termCount, cl, hasEs, hasQA) {
   }).join("");
   document.getElementById("colKey").innerHTML = colKeyHTML;
 
-  var steps = [
-    "<li style='font-size:13px;color:var(--ink-m);line-height:1.8;'><strong>Download the CSV</strong> using the button above</li>",
-    "<li style='font-size:13px;color:var(--ink-m);line-height:1.8;'><strong>Open in Google Sheets</strong> (File - Import - Upload) or Excel</li>",
-    "<li style='font-size:13px;color:var(--ink-m);line-height:1.8;'><strong>Fill in the <code style="font-family:Courier New;font-size:12px;background:var(--teal-bg);color:var(--teal);padding:1px 4px;border-radius:3px;">definition</code> column</strong> for each term - one definition per row</li>",
+  // Build next steps list using DOM
+  var stepsList = document.getElementById("nextStepsList");
+  stepsList.innerHTML = "";
+  var stepTexts = [
+    ["Download the CSV", " using the button above"],
+    ["Open in Google Sheets", " (File - Import - Upload) or Excel"],
+    ["Fill in the definition column", " for each term - one clear sentence per row"]
   ];
-  if (hasEs) steps.push("<li style='font-size:13px;color:var(--ink-m);line-height:1.8;'><strong>Fill in <code style="font-family:Courier New;font-size:12px;background:var(--teal-bg);color:var(--teal);padding:1px 4px;border-radius:3px;">term_es</code></strong> using Google Translate or a medical Spanish dictionary</li>");
-  if (hasQA) steps.push("<li style='font-size:13px;color:var(--ink-m);line-height:1.8;'><strong>Fill in <code style="font-family:Courier New;font-size:12px;background:var(--teal-bg);color:var(--teal);padding:1px 4px;border-radius:3px;">question</code></strong> for each term - write an exam-style question whose answer is that term</li>");
-  steps.push("<li style='font-size:13px;color:var(--ink-m);line-height:1.8;'><strong>Save as CSV</strong> (File - Download - Comma Separated Values)</li>");
-  steps.push("<li style='font-size:13px;color:var(--ink-m);line-height:1.8;'><strong>Open your Canva template</strong> - add placeholders like <code style="font-family:Courier New;font-size:12px;background:var(--teal-bg);color:var(--teal);padding:1px 4px;border-radius:3px;">{{term_en}}</code> to text boxes</li>");
-  steps.push("<li style='font-size:13px;color:var(--ink-m);line-height:1.8;'><strong>Open Apps - Bulk Create</strong> in Canva - upload your completed CSV - Generate designs</li>");
-  steps.push("<li style='font-size:13px;color:var(--ink-m);line-height:1.8;'>See the <strong>Teacher Guide tab</strong> for detailed instructions on every step above</li>");
-
-  document.getElementById("nextStepsList").innerHTML = steps.join("");
+  if (hasEs) stepTexts.push(["Fill in term_es", " using Google Translate or a medical Spanish dictionary"]);
+  if (hasQA) stepTexts.push(["Fill in the question column", " - write an exam-style question whose answer is that term"]);
+  stepTexts.push(["Save as CSV", " - File - Download - Comma Separated Values"]);
+  stepTexts.push(["Open your Canva template", " - add placeholders like {{term_en}} to your text boxes"]);
+  stepTexts.push(["Open Apps - Bulk Create in Canva", " - upload your completed CSV - click Generate designs"]);
+  stepTexts.push(["See the Teacher Guide tab", " for detailed instructions on every step above"]);
+  stepTexts.forEach(function(s) {
+    var li = document.createElement("li");
+    li.style.cssText = "font-size:13px;color:var(--ink-m);line-height:1.8;";
+    var strong = document.createElement("strong");
+    strong.textContent = s[0];
+    li.appendChild(strong);
+    li.appendChild(document.createTextNode(s[1]));
+    stepsList.appendChild(li);
+  });
 }
 
 function downloadCSV() {
